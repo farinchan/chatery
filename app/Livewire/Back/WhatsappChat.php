@@ -11,6 +11,8 @@ class WhatsappChat extends Component
     public $contacts = [];
     public $ui = [];
     public $messages = [];
+    public $selectedChatName = '';
+    public $selectedChatPicture = '';
 
     public function getContacts()
     {
@@ -36,15 +38,13 @@ class WhatsappChat extends Component
             'limit' => 30,
         ]);
 
-
-
         if ($response->successful()) {
             $this->ui = $response->json();
         }
 
     }
 
-    public function getChatMessages($chatId)
+    public function getChatMessages($chatId, $name, $picture)
     {
         $response = Http::withHeaders([
             'Accept' => 'application/json',
@@ -54,6 +54,8 @@ class WhatsappChat extends Component
         if ($response->successful()) {
             $this->messages = $response->json();
             $this->dispatch('messagesUpdated');
+            $this->selectedChatName = $name;
+            $this->selectedChatPicture = $picture;
         }
     }
 

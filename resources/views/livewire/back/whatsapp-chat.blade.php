@@ -29,11 +29,11 @@
                  <div class="tab-content" id="myTabContent">
                      <div class="tab-pane fade show active" id="all-message-tab-pane" role="tabpanel"
                          aria-labelledby="all-message-tab" tabindex="0">
-                         <div class="max-h-497" data-simplebar>
+                         <div class="max-h-497" style="overflow-y: auto;">
 
                              <ul class="ps-0 mb-0 list-unstyled chat-list">
                                  @foreach ($ui as $u)
-                                     <li wire:click="getChatMessages('{{ $u['id'] }}')"
+                                     <li wire:click="getChatMessages('{{ $u['id'] }}', '{{ $u['name'] }}', '{{ $u['picture'] }}')"
                                          class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3 cursor">
                                          <div class="d-flex align-items-center">
                                              <div class="flex-shrink-0 position-relative">
@@ -73,7 +73,7 @@
                      </div>
                      <div class="tab-pane fade" id="contacts-tab-pane" role="tabpanel" aria-labelledby="contacts-tab"
                          tabindex="0">
-                         <div class="max-h-497" data-simplebar>
+                         <div class="max-h-497" style="overflow-y: auto; ">
 
                              <ul class="ps-0 mb-4 list-unstyled chat-list">
                                  @foreach ($contacts as $contact)
@@ -82,7 +82,8 @@
                                              class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3 cursor">
                                              <div class="d-flex align-items-center">
                                                  <div class="flex-shrink-0 position-relative">
-                                                     <img src="..." class="wh-45 rounded-circle" alt="user">
+                                                     <img src="{{ 'https://ui-avatars.com/api/?background=random&name=' . urlencode($contact['name']) }}"
+                                                         class="wh-45 rounded-circle" alt="user">
                                                      <div
                                                          class="position-absolute p-1 bg-success border border-2 border-white rounded-circle status-position2">
                                                      </div>
@@ -122,14 +123,14 @@
                          class="d-flex justify-content-between align-items-center flex-wrap ga-2 border-bottom pb-4 mb-4">
                          <div class="d-flex align-items-center">
                              <div class="flex-shrink-0 position-relative">
-                                 <img src="assets/images/user-49.jpg" class="wh-52 rounded-circle" alt="user">
+                                 <img src="{{ $selectedChatPicture ? $selectedChatPicture : 'https://ui-avatars.com/api/?background=random&name=' . urlencode($selectedChatName) }}" class="wh-52 rounded-circle" alt="user">
                                  <div
                                      class="position-absolute p-1 bg-success border border-2 border-white rounded-circle status-position2">
                                  </div>
                              </div>
                              <div class="flex-grow-1 ms-2 ps-1 position-relative top-2">
-                                 <h4 class="fs-16 fw-semibold mb-1">Michael Johnson</h4>
-                                 <span>Active now</span>
+                                 <h4 class="fs-16 fw-semibold mb-1">{{ $selectedChatName }}</h4>
+                                 {{-- <span>Active now</span> --}}
                              </div>
                          </div>
                          <ul class="ps-0 mb-0 list-unstyled chat-call-option d-flex gap-1 gap-xl-3">
@@ -178,7 +179,7 @@
                      </div>
 
 
-                     <ul class="mb-0 list-unstyled chat-details max-h-419" data-simplebar>
+                     <ul class="mb-0 list-unstyled chat-details max-h-497" style="overflow-y: auto;">
                          @foreach ($messages as $message)
                              @if ($message['fromMe'])
                                  <li class="mb-4 ms-auto own-chat">
@@ -192,7 +193,7 @@
                                                      </button>
                                                      <ul
                                                          class="dropdown-menu dropdown-menu-end bg-white border box-shadow">
-                                                       
+
                                                          <li>
                                                              <a class="dropdown-item" href="javascript:;">
                                                                  <i data-feather="trash-2"></i>
@@ -208,7 +209,7 @@
                                                      </ul>
                                                  </div>
 
-                                                <p>{!! nl2br(e($message['body'])) !!}</p>
+                                                 <p>{!! nl2br(e($message['body'])) !!}</p>
                                              </div>
                                              @php
                                                  $ts = $message['timestamp'] ?? null;
@@ -230,7 +231,7 @@
                                  <li class="mb-4">
                                      <div class="d-sm-flex">
                                          <div class="flex-shrink-0">
-                                             <img src="assets/images/user-49.jpg" class="wh-48 rounded-circle"
+                                             <img src="{{ $selectedChatPicture ? $selectedChatPicture : 'https://ui-avatars.com/api/?background=random&name=' . urlencode($selectedChatName) }}" class="wh-48 rounded-circle"
                                                  alt="user">
                                          </div>
                                          <div class="flex-grow-1 ms-sm-3 mt-3 mt-sm-0">
@@ -244,7 +245,7 @@
                                                      </button>
                                                      <ul
                                                          class="dropdown-menu dropdown-menu-end bg-white border box-shadow">
-                                                         
+
                                                          <li>
                                                              <a class="dropdown-item" href="javascript:;">
                                                                  <i data-feather="trash-2"></i>
@@ -260,7 +261,7 @@
                                                      </ul>
                                                  </div>
                                              </div>
-                                              @php
+                                             @php
                                                  $ts = $message['timestamp'] ?? null;
                                                  if ($ts) {
                                                      $time =
@@ -328,3 +329,35 @@
          </div>
      </div>
  </div>
+
+
+ @push('scripts')
+     <script>
+         document.addEventListener('DOMContentLoaded', function() {
+             // Function to scroll chat to bottom
+             function scrollChatToBottom() {
+                 const chatDetails = document.querySelector('.chat-details');
+                 if (chatDetails) {
+                     chatDetails.scrollTop = chatDetails.scrollHeight;
+                 }
+             }
+
+             // Scroll on page load
+             scrollChatToBottom();
+
+             // Scroll when new messages are loaded (Livewire)
+             document.addEventListener('livewire:load', function() {
+                 Livewire.hook('message.processed', (message, component) => {
+                     scrollChatToBottom();
+                 });
+             });
+
+             // For Livewire v3
+             document.addEventListener('livewire:initialized', () => {
+                 Livewire.hook('morph.updated', () => {
+                     scrollChatToBottom();
+                 });
+             });
+         });
+     </script>
+ @endpush

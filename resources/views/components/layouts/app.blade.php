@@ -477,6 +477,7 @@
     <script src="{{ asset('back/js/custom/echarts.js') }}"></script>
     <script src="{{ asset('back/js/custom/custom.js') }}"></script>
     @livewireScripts
+    @stack('scripts')
 </body>
 
 </html>
