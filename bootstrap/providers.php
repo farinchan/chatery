@@ -1,8 +1,8 @@
 <?php
 
 return [
-    App\Providers\AppServiceProvider::class,
     Jenssegers\Agent\AgentServiceProvider::class,
-    Spatie\Permission\PermissionServiceProvider::class,
+    App\Providers\AppServiceProvider::class,
     RealRashid\SweetAlert\SweetAlertServiceProvider::class,
+    Spatie\Permission\PermissionServiceProvider::class,
 ];
