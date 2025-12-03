@@ -49,6 +49,12 @@
             </div>
         </div>
 
+        @php
+            
+        @endphp
+
+        @if($request->segment(3))
+
         <div class="menu-item pt-5">
             <div class="menu-content">
                 <span class="menu-heading fw-bold text-uppercase fs-7">Whatsapp</span>
