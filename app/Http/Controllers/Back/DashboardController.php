@@ -41,7 +41,7 @@ class DashboardController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'session_name' => 'required|string|max:255|unique:whatsapp_sessions,session_name|regex:/^\S+$/',
-            
+
             'session_webhook_url' => 'nullable|url',
         ], [
             'session_name.required' => 'Nama sesi tidak boleh kosong',
@@ -110,6 +110,24 @@ class DashboardController extends Controller
 
         Alert::success('Success', 'Whatsapp session added successfully');
         return redirect()->back();
+    }
+
+    public function switchSession($session)
+    {
+        // Validasi apakah user memiliki akses ke session ini
+        $whatsappSession = WhatsappSessionUser::whereHas('whatsapp_session', function ($query) use ($session) {
+            $query->where('session_name', $session);
+        })->where('user_id', Auth::id())->first();
+
+        if (!$whatsappSession) {
+            Alert::error('Error', 'Session tidak ditemukan atau Anda tidak memiliki akses');
+            return redirect()->route('back.index');
+        }
+
+        // Set cookie dan redirect
+        return redirect()
+            ->route('back.whatsapp.index', $session)
+            ->cookie('whatsapp_session', $session, 60 * 24 * 30);
     }
 
 

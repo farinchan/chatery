@@ -26,10 +26,10 @@ Route::get('logout', [AuthLoginController::class, 'logoutAction'])->name('logout
 
 
 
-
 route::prefix('back')->name('back.')->middleware('auth')->group(function () {
 
     Route::get('/index', [BackDashboardController::class, 'index'])->name('index');
+    Route::get('/switch-session/{session}', [BackDashboardController::class, 'switchSession'])->name('switch-session');
 
     route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::get('/Visitor', [BackDashboardController::class, 'visitor'])->name('visitor');
@@ -39,7 +39,8 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
         Route::post('/add-whatsapp-session', [BackDashboardController::class, 'addWhatsappSession'])->name('add-whatsapp-session');
     });
 
-    route::prefix('/whatsapp/{session}')->name('whatsapp.')->group(function () {
-        Route::get('/chat', [BackWhatsappController::class, 'index'])->name('chat');
+    route::prefix('/whatsapp/{session}')->name('whatsapp.')->middleware(['auth', 'whatsapp.session'])->group(function () {
+        Route::get('/', [BackWhatsappController::class, 'index'])->name('index');
+        Route::get('/chat', [BackWhatsappController::class, 'chat'])->name('chat');
     });
 });

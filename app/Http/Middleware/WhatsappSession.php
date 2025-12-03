@@ -2,8 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\WhatsappSessionUser;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,13 +20,22 @@ class WhatsappSession
     public function handle(Request $request, Closure $next): Response
     {
         $session = $request->route('session');
-        if ($session) {
-            $response = Http::withHeaders([
-                'Accept' => 'application/json',
-                'X-Api-Key' => env('WAHA_API_KEY'),
-            ])->get(env('WAHA_API_URL') . '/api/sessions/' . $session);
-        }
 
-        return $next($request);
+        if ($session) {
+            $whatsappSession = WhatsappSessionUser::whereHas('whatsapp_session', function ($query) use ($session) {
+                $query->where('session_name', $session);
+            })->where('user_id', Auth::id())->first();
+
+            if (!$whatsappSession) {
+                abort(404);
+            }
+
+            Cookie::queue('whatsapp_session', $session, 60 * 24 * 30);
+
+
+            return $next($request);
+        } else {
+            abort(404);
+        }
     }
 }

@@ -7,14 +7,77 @@
         id="#kt_aside_menu" data-kt-menu="true">
 
         <div class= "menu-item">
-                <a class="menu-link @if (request()->routeIs('back.index')) active @endif"
-                    href="{{ route('back.index') }}">
+            <a class="menu-link @if (request()->routeIs('back.index')) active @endif" href="{{ route('back.index') }}">
+                <span class="menu-icon">
+                    <i class="ki-duotone ki-star fs-2"></i>
+                </span>
+                <span class="menu-title">Overview</span>
+            </a>
+        </div>
+
+        @php
+            $whatsapp_session = Illuminate\Support\Facades\Cookie::get('whatsapp_session');
+        @endphp
+
+        @if ($whatsapp_session)
+            <div class="menu-item pt-5">
+                <div class="menu-content">
+                    <span class="menu-heading fw-bold text-uppercase fs-7">Whatsapp</span>
+                </div>
+            </div>
+
+            <div class= "menu-item">
+                <a class="menu-link @if (request()->routeIs('back.whatsapp.index')) active @endif"
+                    href="{{ route('back.whatsapp.index', $whatsapp_session) }}">
+
                     <span class="menu-icon">
-                        <i class="ki-duotone ki-star fs-2"></i>
-                    </span>
-                    <span class="menu-title">Overview</span>
+                        <i class="ki-duotone ki-element-11 fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                        </i></span>
+                    <span class="menu-title">Dashboard</span>
                 </a>
             </div>
+            <div class= "menu-item">
+                <a class="menu-link @if (request()->routeIs('back.whatsapp.chat')) active @endif"
+                    href="{{ route('back.whatsapp.chat', $whatsapp_session) }}">
+
+                    <span class="menu-icon">
+
+                        <i class="ki-duotone ki-messages fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                            <span class="path5"></span>
+                        </i>
+                    </span>
+                    <span class="menu-title">Chat</span>
+                </a>
+            </div>
+            <div class= "menu-item">
+                <a class="menu-link" href="{{ route('back.whatsapp.chat', $whatsapp_session) }}">
+
+                    <span class="menu-icon">
+                        <i class="ki-duotone ki-code fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                        </i>
+                    </span>
+                    <span class="menu-title">Dokumentasi API</span>
+                </a>
+            </div>
+        @endif
+
+        <div class="menu-item pt-5">
+            <div class="menu-content">
+                <span class="menu-heading fw-bold text-uppercase fs-7">Administrator</span>
+            </div>
+        </div>
 
         <div data-kt-menu-trigger="click" class="menu-item here show menu-accordion">
             <span class="menu-link">
@@ -59,65 +122,8 @@
             </div>
         </div>
 
-        {{-- @php
-
-        @endphp --}}
-
-        @if (request()->segment(3))
-
-            <div class="menu-item pt-5">
-                <div class="menu-content">
-                    <span class="menu-heading fw-bold text-uppercase fs-7">Whatsapp</span>
-                </div>
-            </div>
-
-            <div class= "menu-item">
-                <a class="menu-link @if (request()->routeIs('back.dashboard')) active @endif"
-                    href="{{ route('back.dashboard') }}">
-
-                    <span class="menu-icon">
-                        <i class="ki-duotone ki-element-11 fs-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                            <span class="path3"></span>
-                            <span class="path4"></span>
-                        </i></span>
-                    <span class="menu-title">Dashboard</span>
-                </a>
-            </div>
-            <div class= "menu-item">
-                <a class="menu-link @if (request()->routeIs('back.whatsapp.chat')) active @endif"
-                    href="{{ route('back.whatsapp.chat') }}">
-
-                    <span class="menu-icon">
-                        <i class="ki-duotone ki-element-11 fs-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                            <span class="path3"></span>
-                            <span class="path4"></span>
-                        </i></span>
-                    <span class="menu-title">Chat</span>
-                </a>
-            </div>
-            <div class= "menu-item">
-                <a class="menu-link @if (request()->routeIs('back.whatsapp.chat')) active @endif"
-                    href="{{ route('back.whatsapp.chat') }}">
-
-                    <span class="menu-icon">
-                        <i class="ki-duotone ki-element-11 fs-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                            <span class="path3"></span>
-                            <span class="path4"></span>
-                        </i></span>
-                    <span class="menu-title">Dokumentasi API</span>
-                </a>
-            </div>
-
-        @endif
-
-            @role('humas|super-admin')
-                {{-- <div class="menu-item pt-5">
+        @role('humas|super-admin')
+            {{-- <div class="menu-item pt-5">
                 <div class="menu-content">
                     <span class="menu-heading fw-bold text-uppercase fs-7">Post</span>
                 </div>
@@ -186,13 +192,13 @@
                     <span class="menu-title">Menu Profil</span>
                 </a>
             </div> --}}
-            @endrole
+        @endrole
 
 
 
 
-            @role('super-admin')
-                {{-- <div class="menu-item pt-5">
+        @role('super-admin')
+            {{-- <div class="menu-item pt-5">
                 <div class="menu-content"><span class="menu-heading fw-bold text-uppercase fs-7">Administrator</span>
                 </div>
             </div>
@@ -269,7 +275,7 @@
                     </div>
                 </div>
             </div> --}}
-            @endrole
+        @endrole
 
     </div>
 

@@ -131,13 +131,17 @@
 <!--begin::Aside search-->
 @php
     $whatsapp_sessions = App\Models\WhatsappSessionUser::where('user_id', Auth::id())->with('whatsapp_session')->get();
+    $whatsapp_session = Illuminate\Support\Facades\Cookie::get('whatsapp_session');
 @endphp
 <div class="aside-search py-5">
     <div class="border rounded">
-        <select data-control="select2" class="form-select form-select-solid" data-placeholder="Cari Session..." onchange="window.location.href = this.value">
+        <select data-control="select2" class="form-select form-select-solid" data-placeholder="Cari Session..."
+            onchange="window.location.href = this.value">
             <option></option>
             @foreach ($whatsapp_sessions as $session)
-                <option value="#">{{ $session->whatsapp_session->session_name }}</option>
+                <option value="{{ route('back.switch-session', $session->whatsapp_session->session_name) }}"
+                    @if ($whatsapp_session == $session->whatsapp_session->session_name) selected @endif>
+                    {{ $session->whatsapp_session->session_name }}</option>
             @endforeach
         </select>
     </div>

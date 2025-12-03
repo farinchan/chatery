@@ -186,8 +186,8 @@
                                                                     <a href="#">
                                                                         <div id="tooltip_{{ $session->whatsapp_session->id }}"
                                                                             data-bs-toggle="tooltip"
-                                                                            data-bs-placement="left" title="Mohon Tunggu..."
-                                                                            class="symbol-label">
+                                                                            data-bs-placement="left"
+                                                                            title="Mohon Tunggu..." class="symbol-label">
                                                                             <img id="img_{{ $session->whatsapp_session->id }}"
                                                                                 src="{{ asset('wa_status/pending.png') }}"
                                                                                 alt="..." class="w-100">
@@ -213,10 +213,10 @@
                                                                             } else if (data.data.status === 'STOPPED') {
                                                                                 imgElement.src = '{{ asset('wa_status/disconnected.png') }}';
                                                                                 tooltipElement.setAttribute('title', 'Session is disconnected');
-                                                                            } else if (data.data.status === 'STARTING') { 
+                                                                            } else if (data.data.status === 'STARTING') {
                                                                                 imgElement.src = '{{ asset('wa_status/pending.png') }}';
                                                                                 tooltipElement.setAttribute('title', 'Session is pending');
-                                                                            } else{
+                                                                            } else {
                                                                                 imgElement.src = '{{ asset('wa_status/disconnected.png') }}';
                                                                                 tooltipElement.setAttribute('title', 'Session status is unknown');
                                                                             }
@@ -233,9 +233,7 @@
                                                                             data-bs-placement="left"
                                                                             title="Session anda di blokir"
                                                                             class="symbol-label">
-                                                                            <img src="
-                                                                            {{ asset('wa_status/blocked.png') }}
-                                                                        "
+                                                                            <img src="{{ asset('wa_status/blocked.png') }}"
                                                                                 alt="..." class="w-100">
                                                                         </div>
                                                                     </a>
@@ -248,13 +246,39 @@
                                                             </div>
                                                         </td>
                                                         <td>{{ $session->role }}</td>
-                                                        <td>{{ $session->session_token }}</td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <span class="token-text" id="token_{{ $session->id }}">
+                                                                    ••••••••••••••••
+                                                                </span>
+                                                                <span class="token-full d-none" id="token_full_{{ $session->id }}">
+                                                                    {{ $session->session_token }}
+                                                                </span>
+                                                                <button type="button" class="btn btn-sm btn-icon btn-light-primary"
+                                                                    onclick="toggleToken({{ $session->id }})"
+                                                                    title="Tampilkan/Sembunyikan Token">
+                                                                    <i class="ki-duotone ki-eye fs-3" id="eye_icon_{{ $session->id }}">
+                                                                        <span class="path1"></span>
+                                                                        <span class="path2"></span>
+                                                                        <span class="path3"></span>
+                                                                    </i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-sm btn-icon btn-light-success"
+                                                                    onclick="copyToken('{{ $session->session_token }}', {{ $session->id }})"
+                                                                    title="Salin Token">
+                                                                    <i class="ki-duotone ki-copy fs-3" id="copy_icon_{{ $session->id }}">
+                                                                        <span class="path1"></span>
+                                                                        <span class="path2"></span>
+                                                                    </i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
                                                         <td class="text-end">
                                                             @if ($session->whatsapp_session->is_active)
-                                                                <a href=""
+                                                                <a href="{{ route('back.switch-session', $session->whatsapp_session->session_name) }}"
                                                                     class="btn btn-sm btn-light-primary">Manage</a>
                                                             @else
-                                                                <a href="" class="text-danger">Block</a>
+                                                                <p class="text-danger mb-0">Block</p>
                                                             @endif
 
                                                         </td>
@@ -267,6 +291,8 @@
                             </div>
                         </div>
                     </div>
+
+
 
                     <div class="tab-pane fade" id="kt_user_view_overview_events_and_logs_tab" role="tabpanel">
                         <div class="card pt-4 mb-6 mb-xl-9">
@@ -468,4 +494,45 @@
     </div>
 @endsection
 @section('scripts')
+<script>
+    function toggleToken(sessionId) {
+        const tokenText = document.getElementById('token_' + sessionId);
+        const tokenFull = document.getElementById('token_full_' + sessionId);
+        const eyeIcon = document.getElementById('eye_icon_' + sessionId);
+
+        if (tokenText.classList.contains('d-none')) {
+            tokenText.classList.remove('d-none');
+            tokenFull.classList.add('d-none');
+            eyeIcon.innerHTML = '<span class="path1"></span><span class="path2"></span><span class="path3"></span>';
+        } else {
+            tokenText.classList.add('d-none');
+            tokenFull.classList.remove('d-none');
+            eyeIcon.innerHTML = '<span class="path1"></span><span class="path2"></span><span class="path3"></span>';
+        }
+    }
+
+    function copyToken(token, sessionId) {
+        navigator.clipboard.writeText(token).then(function() {
+            const copyIcon = document.getElementById('copy_icon_' + sessionId);
+            const originalHTML = copyIcon.innerHTML;
+
+            // Ubah icon menjadi check
+            copyIcon.innerHTML = '<span class="path1"></span><span class="path2"></span>';
+            copyIcon.parentElement.classList.remove('btn-light-success');
+            copyIcon.parentElement.classList.add('btn-success');
+
+            // Kembalikan icon setelah 2 detik
+            setTimeout(function() {
+                copyIcon.innerHTML = originalHTML;
+                copyIcon.parentElement.classList.remove('btn-success');
+                copyIcon.parentElement.classList.add('btn-light-success');
+            }, 2000);
+
+            // Tampilkan toast notification
+            toastr.success('Token berhasil disalin!');
+        }, function(err) {
+            toastr.error('Gagal menyalin token!');
+        });
+    }
+</script>
 @endsection
