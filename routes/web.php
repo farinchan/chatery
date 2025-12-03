@@ -29,11 +29,14 @@ Route::get('logout', [AuthLoginController::class, 'logoutAction'])->name('logout
 
 route::prefix('back')->name('back.')->middleware('auth')->group(function () {
 
-    Route::get('/dashboard', [BackDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/index', [BackDashboardController::class, 'index'])->name('index');
+
     route::prefix('dashboard')->name('dashboard.')->group(function () {
+        Route::get('/Visitor', [BackDashboardController::class, 'visitor'])->name('visitor');
         Route::get('/visitor-stat', [BackDashboardController::class, 'visistorStat'])->name('visitor.stat');
         Route::get('/news', [BackDashboardController::class, 'news'])->name('news');
         Route::get('/news-stat', [BackDashboardController::class, 'stat'])->name('news.stat');
+        Route::post('/add-whatsapp-session', [BackDashboardController::class, 'addWhatsappSession'])->name('add-whatsapp-session');
     });
 
     route::prefix('/whatsapp/{session}')->name('whatsapp.')->group(function () {

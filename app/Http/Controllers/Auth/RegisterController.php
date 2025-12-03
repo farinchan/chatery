@@ -80,11 +80,13 @@ class RegisterController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
+            $user->assignRole('user');
+
             // Auto login setelah register
             Auth::login($user);
 
             Alert::success('Success', 'Registrasi berhasil! Selamat datang ' . $user->name);
-            return redirect()->intended(route('back.dashboard'));
+            return redirect()->intended(route('back.index'));
 
         } catch (\Exception $e) {
             Alert::error('Error', 'Terjadi kesalahan saat registrasi: ' . $e->getMessage());

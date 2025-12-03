@@ -129,15 +129,16 @@
 </div>
 <!--end::User-->
 <!--begin::Aside search-->
+@php
+    $whatsapp_sessions = App\Models\WhatsappSessionUser::where('user_id', Auth::id())->with('whatsapp_session')->get();
+@endphp
 <div class="aside-search py-5">
     <div class="border rounded">
-        <select id="kt_docs_select2_rich_content" class="form-select form-select-solid"
-            data-placeholder="Pilih Session">
+        <select data-control="select2" class="form-select form-select-solid" data-placeholder="Cari Session..." onchange="window.location.href = this.value">
             <option></option>
-            <option value="0" data-kt-rich-content-subcontent="089613390766">Session 1</option>
-            <option value="1" data-kt-rich-content-subcontent="..."
-                data-kt-rich-content-icon="assets/media/avatars/300-6.jpg">Option Label 1</option>
-
+            @foreach ($whatsapp_sessions as $session)
+                <option value="#">{{ $session->whatsapp_session->session_name }}</option>
+            @endforeach
         </select>
     </div>
 </div>

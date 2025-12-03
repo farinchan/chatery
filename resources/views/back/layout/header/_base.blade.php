@@ -3,7 +3,7 @@
     <!--begin::Brand-->
     <div class="header-brand">
         <!--begin::Logo-->
-        <a href="{{ route('back.dashboard') }}">
+        <a href="{{ route('back.index') }}">
             <img alt="Logo" src="{{ Storage::url('setting/logo.png') }}" class="h-35px h-lg-45px" />
         </a>
         <!--end::Logo-->
