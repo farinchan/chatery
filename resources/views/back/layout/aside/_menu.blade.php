@@ -49,60 +49,65 @@
             </div>
         </div>
 
-        @php
-            
-        @endphp
+        {{-- @php
 
-        @if($request->segment(3))
+        @endphp --}}
 
-        <div class="menu-item pt-5">
-            <div class="menu-content">
-                <span class="menu-heading fw-bold text-uppercase fs-7">Whatsapp</span>
+        @if (request()->segment(3))
+
+            <div class="menu-item pt-5">
+                <div class="menu-content">
+                    <span class="menu-heading fw-bold text-uppercase fs-7">Whatsapp</span>
+                </div>
             </div>
-        </div>
 
-        <div class= "menu-item">
-            <a class="menu-link @if (request()->routeIs('back.dashboard')) active @endif" href="{{ route('back.dashboard') }}">
+            <div class= "menu-item">
+                <a class="menu-link @if (request()->routeIs('back.dashboard')) active @endif"
+                    href="{{ route('back.dashboard') }}">
 
-                <span class="menu-icon">
-                    <i class="ki-duotone ki-element-11 fs-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                        <span class="path4"></span>
-                    </i></span>
-                <span class="menu-title">Dashboard</span>
-            </a>
-        </div>
-        <div class= "menu-item">
-            <a class="menu-link @if (request()->routeIs('back.whatsapp.chat')) active @endif" href="{{ route('back.whatsapp.chat') }}">
+                    <span class="menu-icon">
+                        <i class="ki-duotone ki-element-11 fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                        </i></span>
+                    <span class="menu-title">Dashboard</span>
+                </a>
+            </div>
+            <div class= "menu-item">
+                <a class="menu-link @if (request()->routeIs('back.whatsapp.chat')) active @endif"
+                    href="{{ route('back.whatsapp.chat') }}">
 
-                <span class="menu-icon">
-                    <i class="ki-duotone ki-element-11 fs-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                        <span class="path4"></span>
-                    </i></span>
-                <span class="menu-title">Chat</span>
-            </a>
-        </div>
-        <div class= "menu-item">
-            <a class="menu-link @if (request()->routeIs('back.whatsapp.chat')) active @endif" href="{{ route('back.whatsapp.chat') }}">
+                    <span class="menu-icon">
+                        <i class="ki-duotone ki-element-11 fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                        </i></span>
+                    <span class="menu-title">Chat</span>
+                </a>
+            </div>
+            <div class= "menu-item">
+                <a class="menu-link @if (request()->routeIs('back.whatsapp.chat')) active @endif"
+                    href="{{ route('back.whatsapp.chat') }}">
 
-                <span class="menu-icon">
-                    <i class="ki-duotone ki-element-11 fs-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                        <span class="path4"></span>
-                    </i></span>
-                <span class="menu-title">Dokumentasi API</span>
-            </a>
-        </div>
+                    <span class="menu-icon">
+                        <i class="ki-duotone ki-element-11 fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                        </i></span>
+                    <span class="menu-title">Dokumentasi API</span>
+                </a>
+            </div>
 
-        @role('humas|super-admin')
-            {{-- <div class="menu-item pt-5">
+        @endif
+
+            @role('humas|super-admin')
+                {{-- <div class="menu-item pt-5">
                 <div class="menu-content">
                     <span class="menu-heading fw-bold text-uppercase fs-7">Post</span>
                 </div>
@@ -171,13 +176,13 @@
                     <span class="menu-title">Menu Profil</span>
                 </a>
             </div> --}}
-        @endrole
+            @endrole
 
 
 
 
-        @role('super-admin')
-            {{-- <div class="menu-item pt-5">
+            @role('super-admin')
+                {{-- <div class="menu-item pt-5">
                 <div class="menu-content"><span class="menu-heading fw-bold text-uppercase fs-7">Administrator</span>
                 </div>
             </div>
@@ -254,7 +259,7 @@
                     </div>
                 </div>
             </div> --}}
-        @endrole
+            @endrole
 
     </div>
 

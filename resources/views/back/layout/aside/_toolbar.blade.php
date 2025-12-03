@@ -111,7 +111,7 @@
                     <!--end::Menu item-->
                     <!--begin::Menu item-->
                     <div class="menu-item px-5">
-                        <a href="{{ route('auth.logout') }}" class="menu-link px-5">
+                        <a href="{{ route('logout') }}" class="menu-link px-5">
                             Keluar
                         </a>
                     </div>

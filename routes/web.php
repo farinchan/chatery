@@ -17,18 +17,17 @@ Route::get('/', function () {
 });
 route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::prefix('auth')->name('auth.')->group(function () {
-    // Authentication Routes...
-    Route::get('login', [AuthLoginController::class, 'login'])->name('login');
-    Route::post('login', [AuthLoginController::class, 'loginAction'])->name('login.action');
-    Route::get('register', [AuthRegisterController::class, 'register'])->name('register');
-    Route::post('register', [AuthRegisterController::class, 'registerAction'])->name('register.action');
-    Route::get('logout', [AuthLoginController::class, 'logoutAction'])->name('logout');
-
-});
+// Authentication Routes...
+Route::get('login', [AuthLoginController::class, 'login'])->name('login');
+Route::post('login', [AuthLoginController::class, 'loginAction'])->name('login.action');
+Route::get('register', [AuthRegisterController::class, 'register'])->name('register');
+Route::post('register', [AuthRegisterController::class, 'registerAction'])->name('register.action');
+Route::get('logout', [AuthLoginController::class, 'logoutAction'])->name('logout');
 
 
-route::prefix('back')->name('back.')->group(function () {
+
+
+route::prefix('back')->name('back.')->middleware('auth')->group(function () {
 
     Route::get('/dashboard', [BackDashboardController::class, 'index'])->name('dashboard');
     route::prefix('dashboard')->name('dashboard.')->group(function () {

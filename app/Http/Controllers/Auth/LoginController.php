@@ -11,7 +11,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class LoginController extends Controller
 {
-    public function index()
+    public function login()
     {
         $setting_web = SettingWebsite::first();
         $data = [
@@ -29,15 +29,15 @@ class LoginController extends Controller
                 ],
                 [
                     'name' => "Login",
-                    'link' => route('auth.login')
+                    'link' => route('login')
                 ]
             ],
             'setting_web' => SettingWebsite::first()
         ];
-        return view('front.pages.auth.login', $data);
+        return view('auth.pages.login', $data);
     }
 
-    public function login(Request $request)
+    public function loginAction(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'login' => 'required',
@@ -63,5 +63,15 @@ class LoginController extends Controller
 
         Alert::error('Error', 'Email atau username dan password salah');
         return redirect()->back()->withInput();
+    }
+
+    public function logoutAction(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        Alert::success('Success', 'Logout berhasil');
+        return redirect()->route('home');
     }
 }

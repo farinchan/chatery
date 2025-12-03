@@ -3,8 +3,8 @@
     <!--begin::Brand-->
     <div class="header-brand">
         <!--begin::Logo-->
-        <a href="{{ route("back.dashboard") }}">
-            <img alt="Logo" src="{{ Storage::url("setting/logo.png") }}" class="h-35px h-lg-45px" />
+        <a href="{{ route('back.dashboard') }}">
+            <img alt="Logo" src="{{ Storage::url('setting/logo.png') }}" class="h-35px h-lg-45px" />
         </a>
         <!--end::Logo-->
         <!--begin::Aside minimize-->
@@ -45,8 +45,8 @@
                                 <a href="#" class="btn btn-sm btn-icon btn-icon-muted btn-active-icon-primary"
                                     data-kt-menu-trigger="{default:'click', lg: 'hover'}"
                                     data-kt-menu-placement="bottom-start" data-kt-menu-overflow="true">
-                                    <img src="{{ auth()?->user()?->getPhoto()?? ""}}"
-                                        class="rounded-3 h-35px w-35px" alt="user">
+                                    <img src="{{ auth()?->user()?->getPhoto() ?? '' }}" class="rounded-3 h-35px w-35px"
+                                        alt="user">
                                 </a>
                                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-color fw-semibold py-4 fs-6 w-275px"
                                     data-kt-menu="true" style="">
@@ -60,7 +60,7 @@
                                         </a>
                                     </div>
                                     <div class="menu-item px-5">
-                                        <a href="{{ route("auth.logout") }}" class="menu-link px-5">
+                                        <a href="{{ route('logout') }}" class="menu-link px-5">
                                             <i class="ki-duotone ki-entrance-right fs-2 me-3 minimize-default">
                                                 <span class="path1"></span>
                                                 <span class="path2"></span>
