@@ -58,7 +58,7 @@ class LoginController extends Controller
         if (Auth::attempt([$loginType => $request->input('login'), 'password' => $request->input('password')])) {
 
             Alert::success('Success', 'Login berhasil');
-            return redirect()->intended(route('back.dashboard'));
+            return redirect()->intended(route('back.index'));
         }
 
         Alert::error('Error', 'Email atau username dan password salah');

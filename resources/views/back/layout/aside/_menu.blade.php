@@ -58,7 +58,7 @@
                 </a>
             </div>
             <div class= "menu-item">
-                <a class="menu-link" href="{{ route('back.whatsapp.chat', $whatsapp_session) }}">
+                <a class="menu-link" href="{{ route('back.whatsapp.documentation.index', $whatsapp_session) }}">
 
                     <span class="menu-icon">
                         <i class="ki-duotone ki-code fs-2">
