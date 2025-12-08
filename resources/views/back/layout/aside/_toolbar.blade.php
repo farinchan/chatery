@@ -135,7 +135,7 @@
 @endphp
 <div class="aside-search py-5">
     <div class="border rounded">
-        <select data-control="select2" class="form-select form-select-solid" data-placeholder="Cari Session..."
+        <select data-control="select2" class="form-select form-select-sm form-select-solid" data-placeholder="Cari Session..."
             onchange="window.location.href = this.value">
             <option></option>
             @foreach ($whatsapp_sessions as $session)

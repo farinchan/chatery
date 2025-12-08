@@ -16,6 +16,7 @@ class WhatsappChat extends Component
     public $selectedChatId = '';
     public $messageText = '';
     public $isLoading = false;
+    public $isSending = false;
     public $myProfile = null;
 
 
@@ -83,6 +84,8 @@ class WhatsappChat extends Component
             return;
         }
 
+        $this->isSending = true;
+
         // Send message via API
         $response = Http::withHeaders([
             'Accept' => 'application/json',
@@ -98,15 +101,16 @@ class WhatsappChat extends Component
             // Clear message input
             $this->messageText = '';
 
-            // Reload messages to show the new message
-            $this->getChatMessages($this->selectedChatId, $this->selectedChatName, $this->selectedChatPicture);
+            // Reload messages to show the new message (without showing loading)
+            $this->refreshMessages();
+            $this->dispatch('messagesUpdated');
 
             session()->flash('success', 'Message sent successfully');
         } else {
             session()->flash('error', 'Failed to send message');
         }
 
-        return true;
+        $this->isSending = false;
     }
 
     public function refreshChats()
