@@ -28,11 +28,9 @@ class WhatsappSession
 
             if (!$whatsappSession) {
                 abort(404);
-            }
+            };
 
-            Cookie::queue('whatsapp_session', $session, 60 * 24 * 30);
-
-
+            $request->headers->set('session_token', $whatsappSession->session_token);
             return $next($request);
         } else {
             abort(404);
