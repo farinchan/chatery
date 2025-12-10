@@ -82,66 +82,6 @@
         </div>
         @endif
 
-        @php
-            $whatsapp_session = Illuminate\Support\Facades\Cookie::get('whatsapp_session');
-        @endphp
-
-
-
-        @if ($whatsapp_session)
-            <div class="menu-item pt-5">
-                <div class="menu-content">
-                    <span class="menu-heading fw-bold text-uppercase fs-7">Whatsapp</span>
-                </div>
-            </div>
-
-            <div class= "menu-item">
-                <a class="menu-link @if (request()->routeIs('back.whatsapp.index')) active @endif"
-                    href="{{ route('back.whatsapp.index', $whatsapp_session) }}">
-
-                    <span class="menu-icon">
-                        <i class="ki-duotone ki-element-11 fs-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                            <span class="path3"></span>
-                            <span class="path4"></span>
-                        </i></span>
-                    <span class="menu-title">Dashboard</span>
-                </a>
-            </div>
-            <div class= "menu-item">
-                <a class="menu-link @if (request()->routeIs('back.whatsapp.chat')) active @endif"
-                    href="{{ route('back.whatsapp.chat', $whatsapp_session) }}">
-
-                    <span class="menu-icon">
-
-                        <i class="ki-duotone ki-messages fs-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                            <span class="path3"></span>
-                            <span class="path4"></span>
-                            <span class="path5"></span>
-                        </i>
-                    </span>
-                    <span class="menu-title">Chat</span>
-                </a>
-            </div>
-            <div class= "menu-item">
-                <a class="menu-link" href="{{ route('back.whatsapp.documentation.index', $whatsapp_session) }}">
-
-                    <span class="menu-icon">
-                        <i class="ki-duotone ki-code fs-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                            <span class="path3"></span>
-                            <span class="path4"></span>
-                        </i>
-                    </span>
-                    <span class="menu-title">Dokumentasi API</span>
-                </a>
-            </div>
-        @endif
-
         <div class="menu-item pt-5">
             <div class="menu-content">
                 <span class="menu-heading fw-bold text-uppercase fs-7">Administrator</span>

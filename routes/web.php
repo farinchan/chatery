@@ -69,18 +69,4 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
         Route::post('/add-team', [BackDashboardController::class, 'addTeam'])->name('add-team');
     });
 
-    route::prefix('/whatsapp/{session}')->name('whatsapp.')->middleware(['auth', 'whatsapp.session'])->group(function () {
-        Route::get('/', [BackWhatsappController::class, 'index'])->name('index');
-        Route::get('/chat', [BackWhatsappController::class, 'chat'])->name('chat');
-
-        Route::prefix('documentation')->name('documentation.')->group(function () {
-            Route::get('/', function () {
-                return redirect()->route('back.whatsapp.documentation.sendMessage', request()->route('session'));
-            })->name('index');
-            Route::get('/send-message', [App\Http\Controllers\Back\DocumentationController::class, 'sendMessage'])->name('sendMessage');
-            Route::get('/send-image', [App\Http\Controllers\Back\DocumentationController::class, 'sendImage'])->name('sendImage');
-            Route::get('/send-document', [App\Http\Controllers\Back\DocumentationController::class, 'sendDocument'])->name('sendDocument');
-            Route::get('/send-bulk-message', [App\Http\Controllers\Back\DocumentationController::class, 'sendBulkMessage'])->name('sendBulkMessage');
-        });
-    });
 });
