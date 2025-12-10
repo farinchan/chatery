@@ -151,143 +151,135 @@
                         <div class="card card-flush mb-6 mb-xl-9">
                             <div class="card-header mt-6">
                                 <div class="card-title flex-column">
-                                    <h2 class="mb-1">Whatsapp Session</h2>
-                                    <div class="fs-6 fw-semibold text-muted">{{ $whatsapp_sessions->count() }} Session
-                                        aktif</div>
+                                    <h2 class="mb-1">
+                                        <i class="ki-duotone ki-people fs-2 me-2 text-primary">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                            <span class="path5"></span>
+                                        </i>
+                                        Team Saya
+                                    </h2>
+                                    <div class="fs-6 fw-semibold text-muted">{{ $teams->count() }} Team terdaftar</div>
                                 </div>
                                 <div class="card-toolbar">
                                     <button type="button" class="btn btn-light-primary btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#add_whatsappsession">
-                                        <i class="ki-duotone ki-abstract-10 fs-3">
-                                            <span class="path1"></span>
-                                            <span class="path2"></span>
-                                        </i>Tambah Session</button>
+                                        data-bs-target="#modal_add_team">
+                                        <i class="ki-duotone ki-plus fs-3"></i>
+                                        Buat Team Baru
+                                    </button>
                                 </div>
                             </div>
                             <div class="card-body p-9 pt-4">
-                                <div class="">
-                                    <div class="table-responsive">
-                                        <table class="table table-row-dashed table-row-gray-300 gy-7">
-                                            <thead>
-                                                <tr class="fw-bold fs-6 text-gray-800">
-                                                    <th>Whatsapp Session</th>
-                                                    <th>Role</th>
-                                                    <th>token</th>
-                                                    <th class="text-end">Manage</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($whatsapp_sessions as $session)
-                                                    <tr>
-                                                        <td class="d-flex align-items-center">
-                                                            @if ($session->whatsapp_session->is_active)
-                                                                <div
-                                                                    class="symbol symbol-circle symbol-50px overflow-hidden me-3">
-                                                                    <a href="#">
-                                                                        <div id="tooltip_{{ $session->whatsapp_session->id }}"
-                                                                            data-bs-toggle="tooltip"
-                                                                            data-bs-placement="left"
-                                                                            title="Mohon Tunggu..." class="symbol-label">
-                                                                            <img id="img_{{ $session->whatsapp_session->id }}"
-                                                                                src="{{ asset('wa_status/pending.png') }}"
-                                                                                alt="..." class="w-100">
-                                                                        </div>
-                                                                    </a>
-                                                                </div>
-                                                                <script>
-                                                                    fetch('{{ route('api.v1.session.show', $session->whatsapp_session->session_name) }}', {
-                                                                            headers: {
-                                                                                'Accept': 'application/json',
-                                                                                'session_token': '{{ $session->session_token }}'
-                                                                            }
-                                                                        })
-                                                                        .then(response => response.json())
-                                                                        .then(data => {
-                                                                            console.log(data);
-                                                                            const imgElement = document.getElementById('img_{{ $session->whatsapp_session->id }}');
-                                                                            const tooltipElement = document.getElementById('tooltip_{{ $session->whatsapp_session->id }}');
+                                @if($teams->count() > 0)
+                                <div class="row g-6">
+                                    @foreach ($teams as $teamUser)
+                                        <div class="col-md-6 col-xl-4">
+                                            <div class="card border border-gray-300 border-hover shadow-sm h-100">
+                                                <div class="card-body d-flex flex-column p-6">
+                                                    {{-- Header dengan Logo dan Info --}}
+                                                    <div class="d-flex align-items-center mb-5">
+                                                        <div class="symbol symbol-60px symbol-circle me-4">
+                                                            <img src="{{ $teamUser->team->getLogo() }}" alt="{{ $teamUser->team->name }}" />
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <a href="{{ route('back.team.index', $teamUser->team->name_id) }}"
+                                                               class="text-gray-800 text-hover-primary fs-4 fw-bold mb-1 d-block">
+                                                                {{ $teamUser->team->name }}
+                                                            </a>
+                                                            <span class="badge badge-light-{{ $teamUser->role == 'owner' ? 'danger' : ($teamUser->role == 'admin' ? 'warning' : 'primary') }}">
+                                                                {{ ucfirst($teamUser->role) }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
 
-                                                                            if (data.data.status === 'WORKING') {
-                                                                                imgElement.src = '{{ asset('wa_status/connected.png') }}';
-                                                                                tooltipElement.setAttribute('title', 'Session is connected');
-                                                                            } else if (data.data.status === 'STOPPED') {
-                                                                                imgElement.src = '{{ asset('wa_status/disconnected.png') }}';
-                                                                                tooltipElement.setAttribute('title', 'Session is disconnected');
-                                                                            } else if (data.data.status === 'STARTING') {
-                                                                                imgElement.src = '{{ asset('wa_status/pending.png') }}';
-                                                                                tooltipElement.setAttribute('title', 'Session is pending');
-                                                                            } else {
-                                                                                imgElement.src = '{{ asset('wa_status/disconnected.png') }}';
-                                                                                tooltipElement.setAttribute('title', 'Session status is unknown');
-                                                                            }
-                                                                        })
-                                                                        .catch(error => {
-                                                                            console.error('Error fetching session status:', error);
-                                                                        });
-                                                                </script>
-                                                            @else
-                                                                <div
-                                                                    class="symbol symbol-circle symbol-50px overflow-hidden me-3">
-                                                                    <a href="#">
-                                                                        <div data-bs-toggle="tooltip"
-                                                                            data-bs-placement="left"
-                                                                            title="Session anda di blokir"
-                                                                            class="symbol-label">
-                                                                            <img src="{{ asset('wa_status/blocked.png') }}"
-                                                                                alt="..." class="w-100">
-                                                                        </div>
-                                                                    </a>
-                                                                </div>
-                                                            @endif
-                                                            <div class="d-flex flex-column">
-                                                                <a href=""
-                                                                    class="text-gray-800 text-bold text-hover-primary mb-1">{{ $session->whatsapp_session->session_name }}</a>
-                                                                <span>-</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>{{ $session->role }}</td>
-                                                        <td>
-                                                            <div class="d-flex align-items-center gap-2">
-                                                                <span class="token-text" id="token_{{ $session->id }}">
-                                                                    ••••••••••••••••
-                                                                </span>
-                                                                <span class="token-full d-none" id="token_full_{{ $session->id }}">
-                                                                    {{ $session->session_token }}
-                                                                </span>
-                                                                <button type="button" class="btn btn-sm btn-icon btn-light-primary"
-                                                                    onclick="toggleToken({{ $session->id }})"
-                                                                    title="Tampilkan/Sembunyikan Token">
-                                                                    <i class="ki-duotone ki-eye fs-3" id="eye_icon_{{ $session->id }}">
-                                                                        <span class="path1"></span>
-                                                                        <span class="path2"></span>
-                                                                        <span class="path3"></span>
-                                                                    </i>
-                                                                </button>
-                                                                <button type="button" class="btn btn-sm btn-icon btn-light-success"
-                                                                    onclick="copyToken('{{ $session->session_token }}', {{ $session->id }})"
-                                                                    title="Salin Token">
-                                                                    <i class="ki-duotone ki-copy fs-3" id="copy_icon_{{ $session->id }}">
-                                                                        <span class="path1"></span>
-                                                                        <span class="path2"></span>
-                                                                    </i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            @if ($session->whatsapp_session->is_active)
-                                                                <a href="{{ route('back.switch-session', $session->whatsapp_session->session_name) }}"
-                                                                    class="btn btn-sm btn-light-primary">Manage</a>
-                                                            @else
-                                                                <p class="text-danger mb-0">Block</p>
-                                                            @endif
+                                                    {{-- Info Team --}}
+                                                    <div class="mb-5">
+                                                        @if($teamUser->team->email)
+                                                        <div class="d-flex align-items-center text-gray-600 mb-2">
+                                                            <i class="ki-duotone ki-sms fs-5 me-2">
+                                                                <span class="path1"></span>
+                                                                <span class="path2"></span>
+                                                            </i>
+                                                            <span class="fs-7">{{ $teamUser->team->email }}</span>
+                                                        </div>
+                                                        @endif
+                                                        @if($teamUser->team->phone)
+                                                        <div class="d-flex align-items-center text-gray-600 mb-2">
+                                                            <i class="ki-duotone ki-phone fs-5 me-2">
+                                                                <span class="path1"></span>
+                                                                <span class="path2"></span>
+                                                            </i>
+                                                            <span class="fs-7">{{ $teamUser->team->phone }}</span>
+                                                        </div>
+                                                        @endif
+                                                    </div>
 
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                    {{-- Stats --}}
+                                                    <div class="d-flex justify-content-between mb-5">
+                                                        <div class="text-center">
+                                                            <span class="fs-2 fw-bold text-gray-800">{{ $teamUser->team->teamUsers->count() }}</span>
+                                                            <span class="fs-7 fw-semibold text-gray-500 d-block">Member</span>
+                                                        </div>
+                                                        <div class="border-start"></div>
+                                                        <div class="text-center">
+                                                            <span class="fs-2 fw-bold text-success">-</span>
+                                                            <span class="fs-7 fw-semibold text-gray-500 d-block">Online</span>
+                                                        </div>
+                                                        <div class="border-start"></div>
+                                                        <div class="text-center">
+                                                            <span class="badge badge-light-{{ $teamUser->status == 'active' ? 'success' : 'danger' }} fs-7">
+                                                                {{ ucfirst($teamUser->status) }}
+                                                            </span>
+                                                            <span class="fs-7 fw-semibold text-gray-500 d-block">Status</span>
+                                                        </div>
+                                                    </div>
+
+
+                                                    {{-- Action Button --}}
+                                                    <div class="mt-auto">
+                                                        @if ($teamUser->status == 'active')
+                                                            <a href="{{ route('back.team.index', $teamUser->team->name_id) }}"
+                                                                class="btn btn-primary btn-sm w-100">
+                                                                <i class="ki-duotone ki-setting-2 fs-4 me-1">
+                                                                    <span class="path1"></span>
+                                                                    <span class="path2"></span>
+                                                                </i>
+                                                                Kelola Team
+                                                            </a>
+                                                        @else
+                                                            <button class="btn btn-secondary btn-sm w-100" disabled>
+                                                                <i class="ki-duotone ki-lock fs-4 me-1">
+                                                                    <span class="path1"></span>
+                                                                    <span class="path2"></span>
+                                                                </i>
+                                                                Akses Diblokir
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
+                                @else
+                                <div class="text-center py-10">
+                                    <i class="ki-duotone ki-people fs-5tx text-gray-300 mb-5">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                    </i>
+                                    <div class="fs-4 fw-bold text-gray-600 mb-2">Belum ada Team</div>
+                                    <div class="fs-6 text-gray-500 mb-5">Buat team pertama Anda untuk mulai mengelola WhatsApp</div>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_add_team">
+                                        <i class="ki-duotone ki-plus fs-3"></i>
+                                        Buat Team Baru
+                                    </button>
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -415,13 +407,23 @@
         </div>
     </div>
 
-    <div class="modal fade" tabindex="-1" id="add_whatsappsession">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
+    {{-- Modal Create Team --}}
+    <div class="modal fade" tabindex="-1" id="modal_add_team">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="{{ route('back.dashboard.add-whatsapp-session') }}" method="POST">
+                <form action="{{ route('back.dashboard.add-team') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header">
-                        <h3 class="modal-title">Buat WhatsApp Session</h3>
+                        <h3 class="modal-title">
+                            <i class="ki-duotone ki-people fs-2 me-2 text-primary">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
+                            </i>
+                            Buat Team Baru
+                        </h3>
                         <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
                             aria-label="Close">
                             <i class="ki-duotone ki-cross fs-1">
@@ -432,33 +434,68 @@
                     </div>
 
                     <div class="modal-body">
-
-                        <div class="mb-5">
-                            <label for="session_name" class="required form-label">Nama Session</label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">{{ $prefix_addwhatsappsesssion }}</span>
-                                <input type="text" class="form-control  @error('session_name') is-invalid @enderror"
-                                    id="session_name" name="session_name" placeholder="Contoh: session_utama"
-                                    value="{{ old('session_name') }}" required />
+                        {{-- Logo Upload --}}
+                        <div class="mb-7">
+                            <label class="form-label">Logo Team</label>
+                            <div class="d-flex align-items-center">
+                                <div class="symbol symbol-100px symbol-circle me-5">
+                                    <img id="logo_preview" src="https://ui-avatars.com/api/?name=T&background=3699FF&color=fff&size=100" alt="Logo Preview" />
+                                </div>
+                                <div>
+                                    <label for="logo_input" class="btn btn-sm btn-light-primary me-2">
+                                        <i class="ki-duotone ki-picture fs-3">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        Pilih Logo
+                                    </label>
+                                    <input type="file" id="logo_input" name="logo" class="d-none" accept="image/*" onchange="previewLogo(this)" />
+                                    <div class="form-text mt-2">Format: JPG, PNG, GIF (Max 2MB)</div>
+                                </div>
                             </div>
-
-                            @error('session_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <div class="form-text">Berikan nama yang mudah diingat untuk session WhatsApp Anda, tanpa
-                                spasi</div>
                         </div>
 
+                        {{-- Team Name --}}
                         <div class="mb-5">
-                            <label for="session_webhook_url" class="form-label">Webhook URL <span
-                                    class="text-muted">(Opsional)</span></label>
-                            <input type="url" class="form-control @error('session_webhook_url') is-invalid @enderror"
-                                id="session_webhook_url" name="session_webhook_url"
-                                placeholder="https://example.com/webhook" value="{{ old('session_webhook_url') }}" />
-                            @error('session_webhook_url')
+                            <label for="team_name" class="required form-label">Nama Team</label>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                id="team_name" name="name" placeholder="Contoh: Marketing Team"
+                                value="{{ old('name') }}" required />
+                            @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <div class="form-text">URL untuk menerima notifikasi pesan masuk</div>
+                        </div>
+
+                        {{-- Email --}}
+                        <div class="mb-5">
+                            <label for="team_email" class="form-label">Email Team <span class="text-muted">(Opsional)</span></label>
+                            <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                id="team_email" name="email" placeholder="team@example.com"
+                                value="{{ old('email') }}" />
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Phone --}}
+                        <div class="mb-5">
+                            <label for="team_phone" class="form-label">Nomor Telepon <span class="text-muted">(Opsional)</span></label>
+                            <input type="text" class="form-control @error('phone') is-invalid @enderror"
+                                id="team_phone" name="phone" placeholder="08xxxxxxxxxx"
+                                value="{{ old('phone') }}" />
+                            @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Address --}}
+                        <div class="mb-5">
+                            <label for="team_address" class="form-label">Alamat <span class="text-muted">(Opsional)</span></label>
+                            <textarea class="form-control @error('address') is-invalid @enderror"
+                                id="team_address" name="address" rows="2" placeholder="Alamat lengkap team">{{ old('address') }}</textarea>
+                            @error('address')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
@@ -470,8 +507,7 @@
                             <div class="d-flex flex-stack flex-grow-1">
                                 <div class="fw-semibold">
                                     <div class="fs-6 text-gray-700">
-                                        Session akan dibuat dalam status non-aktif. Anda perlu melakukan scan QR code untuk
-                                        mengaktifkan session.
+                                        Anda akan menjadi owner dari team ini dan dapat mengundang member lain untuk bergabung.
                                     </div>
                                 </div>
                             </div>
@@ -485,7 +521,7 @@
                                 <span class="path1"></span>
                                 <span class="path2"></span>
                             </i>
-                            Buat Session
+                            Buat Team
                         </button>
                     </div>
                 </form>
@@ -495,44 +531,16 @@
 @endsection
 @section('scripts')
 <script>
-    function toggleToken(sessionId) {
-        const tokenText = document.getElementById('token_' + sessionId);
-        const tokenFull = document.getElementById('token_full_' + sessionId);
-        const eyeIcon = document.getElementById('eye_icon_' + sessionId);
+    
 
-        if (tokenText.classList.contains('d-none')) {
-            tokenText.classList.remove('d-none');
-            tokenFull.classList.add('d-none');
-            eyeIcon.innerHTML = '<span class="path1"></span><span class="path2"></span><span class="path3"></span>';
-        } else {
-            tokenText.classList.add('d-none');
-            tokenFull.classList.remove('d-none');
-            eyeIcon.innerHTML = '<span class="path1"></span><span class="path2"></span><span class="path3"></span>';
+    function previewLogo(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('logo_preview').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
         }
-    }
-
-    function copyToken(token, sessionId) {
-        navigator.clipboard.writeText(token).then(function() {
-            const copyIcon = document.getElementById('copy_icon_' + sessionId);
-            const originalHTML = copyIcon.innerHTML;
-
-            // Ubah icon menjadi check
-            copyIcon.innerHTML = '<span class="path1"></span><span class="path2"></span>';
-            copyIcon.parentElement.classList.remove('btn-light-success');
-            copyIcon.parentElement.classList.add('btn-success');
-
-            // Kembalikan icon setelah 2 detik
-            setTimeout(function() {
-                copyIcon.innerHTML = originalHTML;
-                copyIcon.parentElement.classList.remove('btn-success');
-                copyIcon.parentElement.classList.add('btn-light-success');
-            }, 2000);
-
-            // Tampilkan toast notification
-            toastr.success('Token berhasil disalin!');
-        }, function(err) {
-            toastr.error('Gagal menyalin token!');
-        });
     }
 </script>
 @endsection

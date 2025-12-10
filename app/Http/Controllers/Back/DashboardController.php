@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Back;
 use App\Http\Controllers\Controller;
 use App\Models\News;
 use App\Models\NewsViewer;
+use App\Models\Team;
 use App\Models\TeamUser;
 use App\Models\Visitor;
 use App\Models\WhatsappSession;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Str;
@@ -21,6 +23,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $teams = TeamUser::where('user_id', Auth::id())
+            ->with('team.teamUsers')
+            ->get();
+
         $data = [
             'title' => 'Dashboard',
             'breadcrumb' => [
@@ -30,12 +36,69 @@ class DashboardController extends Controller
                 ],
             ],
             'user' => Auth::user(),
-            'whatsapp_sessions' => WhatsappSessionUser::where('user_id', Auth::id())->with('whatsapp_session')->get(),
-            'prefix_addwhatsappsesssion' => (Auth::user()->username
-                ? Str::limit(Auth::user()->username, 4, '')
-                : bin2hex(random_bytes(4))) . str_pad((WhatsappSession::count() + 1), 4, '0', STR_PAD_LEFT) . "_"
+            'teams' => $teams,
         ];
         return view('back.pages.dashboard.index', $data);
+    }
+
+    public function addTeam(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Nama team tidak boleh kosong',
+            'name.max' => 'Nama team maksimal 255 karakter',
+            'email.email' => 'Format email tidak valid',
+            'address.max' => 'Alamat maksimal 500 karakter',
+            'logo.image' => 'Logo harus berupa gambar',
+            'logo.mimes' => 'Format logo harus jpeg, png, jpg, atau gif',
+            'logo.max' => 'Ukuran logo maksimal 2MB',
+        ]);
+
+        if ($validation->fails()) {
+            Alert::error('Error', $validation->errors()->first());
+            return redirect()->back()->withErrors($validation)->withInput();
+        }
+
+        try {
+            // Generate unique name_id
+            $nameId = Str::slug($request->name) . '-' . Str::random(6);
+
+            // Handle logo upload
+            $logoPath = null;
+            if ($request->hasFile('logo')) {
+                $logoPath = $request->file('logo')->store('teams/logos', 'public');
+            }
+
+            // Create team
+            $team = Team::create([
+                'name' => $request->name,
+                'name_id' => $nameId,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'logo' => $logoPath,
+            ]);
+
+            // Create team user as owner
+            TeamUser::create([
+                'team_id' => $team->id,
+                'user_id' => Auth::id(),
+                'role' => 'owner',
+                'status' => 'active',
+                'session_token' => bin2hex(random_bytes(16)),
+            ]);
+
+            Alert::success('Success', 'Team berhasil dibuat');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Alert::error('Error', 'Terjadi kesalahan: ' . $th->getMessage());
+            return redirect()->back()->withInput();
+        }
     }
 
     public function switchTeam($team)

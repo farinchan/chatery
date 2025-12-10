@@ -66,6 +66,7 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
         Route::get('/news', [BackDashboardController::class, 'news'])->name('news');
         Route::get('/news-stat', [BackDashboardController::class, 'stat'])->name('news.stat');
         Route::post('/add-whatsapp-session', [BackDashboardController::class, 'addWhatsappSession'])->name('add-whatsapp-session');
+        Route::post('/add-team', [BackDashboardController::class, 'addTeam'])->name('add-team');
     });
 
     route::prefix('/whatsapp/{session}')->name('whatsapp.')->middleware(['auth', 'whatsapp.session'])->group(function () {
