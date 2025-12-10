@@ -16,8 +16,77 @@
         </div>
 
         @php
+            $current_team = Illuminate\Support\Facades\Cookie::get('current_team');
+        @endphp
+
+        @if ($current_team)
+            <div class="menu-item pt-5">
+                <div class="menu-content">
+                    <span class="menu-heading fw-bold text-uppercase fs-7">Teams</span>
+                </div>
+            </div>
+
+            <div class= "menu-item">
+                <a class="menu-link @if (request()->routeIs('back.team.index')) active @endif"
+                    href="{{ route('back.team.index', $current_team) }}">
+
+                    <span class="menu-icon ">
+                        <i class="ki-duotone ki-element-11 fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                        </i></span>
+                    <span class="menu-title">My Teams</span>
+                </a>
+            </div>
+
+               <div data-kt-menu-trigger="click" class="menu-item here show menu-accordion">
+            <span class="menu-link">
+                <span class="menu-icon">
+                    <i class="ki-duotone ki-element-11 fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        <span class="path4"></span>
+                    </i></span>
+                <span class="menu-title">WhatsApp</span>
+                <span class="menu-arrow"></span>
+            </span>
+            <div class="menu-sub menu-sub-accordion">
+                <div class="menu-item">
+                    <a class="menu-link @if (request()->routeIs('back.team.whatsapp.index' , $current_team)) active @endif"
+                        href="{{ route('back.team.whatsapp.index' , $current_team) }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">Device Link</span>
+                    </a>
+                    <a class="menu-link @if (request()->routeIs('back.team.whatsapp.chat' , $current_team)) active @endif"
+                        href="{{ route('back.team.whatsapp.chat' , $current_team) }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">Chat</span>
+                    </a>
+                    <a class="menu-link @if (request()->routeIs('back.team.whatsapp.documentation.index' , $current_team)) active @endif"
+                        href="{{ route('back.team.whatsapp.documentation.index' , $current_team) }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">Dokumentasi API</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        @endif
+
+        @php
             $whatsapp_session = Illuminate\Support\Facades\Cookie::get('whatsapp_session');
         @endphp
+
+
 
         @if ($whatsapp_session)
             <div class="menu-item pt-5">

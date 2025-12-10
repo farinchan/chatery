@@ -2,12 +2,13 @@
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 
 class WhatsappChat extends Component
 {
-    public $session = "TORKATA_RESEARCH";
+    public $session = '';
     public $contacts = [];
     public $ui = [];
     public $messages = [];
@@ -159,6 +160,7 @@ class WhatsappChat extends Component
 
     public function mount()
     {
+        $this->session = Cookie::get('current_team') ?? '';
         $this->getContacts();
         $this->getChatsOverview();
         $this->getMyProfile();

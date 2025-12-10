@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\SettingBanner;
 use App\Models\SettingWebsite;
+use App\Models\Team;
+use App\Models\TeamUser;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -48,6 +50,19 @@ class DatabaseSeeder extends Seeder
             'subtitle' => 'Enhancing Customer Interaction with Advanced AI Technology',
             'image' => 'setting/banner/vC5qyP6SqARhMTDtFaUm.png',
             'url' => 'https://torkataresearch.org',
+        ]);
+
+        Team::create([
+            'name' => 'Development Team',
+            'name_id' => 'development_team',
+            'email' => 'development@chatery.com',
+        ]);
+
+        TeamUser::create([
+            'team_id' => 1,
+            'user_id' => 1,
+            'role' => 'owner',
+            'token' => bin2hex(random_bytes(16)),
         ]);
     }
 }

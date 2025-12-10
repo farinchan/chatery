@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Back;
 use App\Http\Controllers\Controller;
 use App\Models\News;
 use App\Models\NewsViewer;
+use App\Models\TeamUser;
 use App\Models\Visitor;
 use App\Models\WhatsappSession;
 use App\Models\WhatsappSessionUser;
@@ -35,6 +36,24 @@ class DashboardController extends Controller
                 : bin2hex(random_bytes(4))) . str_pad((WhatsappSession::count() + 1), 4, '0', STR_PAD_LEFT) . "_"
         ];
         return view('back.pages.dashboard.index', $data);
+    }
+
+    public function switchTeam($team)
+    {
+        // Validasi apakah user memiliki akses ke team ini
+        $teamUser = TeamUser::whereHas('team', function ($query) use ($team) {
+            $query->where('name_id', $team);
+        })->where('user_id', Auth::id())->first();
+
+        if (!$teamUser) {
+            Alert::error('Error', 'Team tidak ditemukan atau Anda tidak memiliki akses');
+            return redirect()->route('back.index');
+        }
+
+        // Set cookie dan redirect
+        return redirect()
+            ->route('back.team.index', $team)
+            ->cookie('current_team', $team, 60 * 24 * 30);
     }
 
     public function addWhatsappSession(Request $request)

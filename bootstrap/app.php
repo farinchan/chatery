@@ -14,7 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'whatsapp.session' => \App\Http\Middleware\WhatsappSession::class,
+            'track.online' => \App\Http\Middleware\TrackOnlineStatus::class,
         ]);
+
+        // Add track online status to web middleware group
+        $middleware->appendToGroup('web', \App\Http\Middleware\TrackOnlineStatus::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

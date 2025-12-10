@@ -51,6 +51,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'team_users', 'user_id', 'team_id')->withPivot('role')->withTimestamps();
+    }
+
     public function getPhoto()
     {
         if ($this->photo && (str_starts_with($this->photo, 'http://') || str_starts_with($this->photo, 'https://'))) {

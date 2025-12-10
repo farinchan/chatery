@@ -30,7 +30,35 @@ Route::get('logout', [AuthLoginController::class, 'logoutAction'])->name('logout
 route::prefix('back')->name('back.')->middleware('auth')->group(function () {
 
     Route::get('/index', [BackDashboardController::class, 'index'])->name('index');
+    Route::get('/switch-team/{team}', [BackDashboardController::class, 'switchTeam'])->name('switch-team');
     Route::get('/switch-session/{session}', [BackDashboardController::class, 'switchSession'])->name('switch-session');
+
+    Route::prefix('team/{nameId}')->name('team.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Back\TeamController::class, 'index'])->name('index');
+        Route::put('/update', [App\Http\Controllers\Back\TeamController::class, 'update'])->name('update');
+        Route::get('/online-status', [App\Http\Controllers\Back\TeamController::class, 'getOnlineStatus'])->name('online-status');
+        Route::post('/member/add', [App\Http\Controllers\Back\TeamController::class, 'addMember'])->name('member.add');
+        Route::put('/member/{member}/update', [App\Http\Controllers\Back\TeamController::class, 'updateMember'])->name('member.update');
+        Route::delete('/member/{member}/delete', [App\Http\Controllers\Back\TeamController::class, 'deleteMember'])->name('member.delete');
+
+        Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
+            Route::get('/', [BackWhatsappController::class, 'index'])->name('index');
+            Route::get('/chat', [BackWhatsappController::class, 'chat'])->name('chat');
+
+            Route::prefix('documentation')->name('documentation.')->group(function () {
+                Route::get('/', function () {
+                    return redirect()->route('back.whatsapp.documentation.sendMessage', request()->route('session'));
+                })->name('index');
+                Route::get('/send-message', [App\Http\Controllers\Back\DocumentationController::class, 'sendMessage'])->name('sendMessage');
+                Route::get('/send-image', [App\Http\Controllers\Back\DocumentationController::class, 'sendImage'])->name('sendImage');
+                Route::get('/send-document', [App\Http\Controllers\Back\DocumentationController::class, 'sendDocument'])->name('sendDocument');
+                Route::get('/send-bulk-message', [App\Http\Controllers\Back\DocumentationController::class, 'sendBulkMessage'])->name('sendBulkMessage');
+            });
+        });
+        Route::prefix('customer-service')->name('customer-service.')->group(function () {
+
+        });
+    });
 
     route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::get('/Visitor', [BackDashboardController::class, 'visitor'])->name('visitor');

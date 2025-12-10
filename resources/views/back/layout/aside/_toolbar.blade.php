@@ -130,18 +130,18 @@
 <!--end::User-->
 <!--begin::Aside search-->
 @php
-    $whatsapp_sessions = App\Models\WhatsappSessionUser::where('user_id', Auth::id())->with('whatsapp_session')->get();
-    $whatsapp_session = Illuminate\Support\Facades\Cookie::get('whatsapp_session');
+    $teams = auth()->user()->teams;
+    $current_team = Illuminate\Support\Facades\Cookie::get('current_team');
 @endphp
 <div class="aside-search py-5">
     <div class="border rounded">
-        <select data-control="select2" class="form-select form-select-sm form-select-solid" data-placeholder="Cari Session..."
-            onchange="window.location.href = this.value">
+        <select data-control="select2" class="form-select form-select-sm form-select-solid" data-placeholder="Pilih Team"
+            onchange="window.location.href = this.value" data-hide-search="true">
             <option></option>
-            @foreach ($whatsapp_sessions as $session)
-                <option value="{{ route('back.switch-session', $session->whatsapp_session->session_name) }}"
-                    @if ($whatsapp_session == $session->whatsapp_session->session_name) selected @endif>
-                    {{ $session->whatsapp_session->session_name }}</option>
+            @foreach ($teams as $team)
+                <option value="{{ route('back.switch-team', $team->name_id) }}"
+                    @if ($current_team == $team->name_id) selected @endif>
+                    {{ $team->name }}</option>
             @endforeach
         </select>
     </div>
