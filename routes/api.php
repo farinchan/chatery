@@ -11,6 +11,16 @@ Route::get('/user', function (Request $request) {
 Route::post('/telegram/webhook/{botId}', [App\Http\Controllers\Api\TelegramWebhookController::class, 'handle'])
     ->name('api.telegram.webhook');
 
+// Website Chat API (public, no auth required)
+Route::prefix('webchat')->name('api.webchat.')->group(function () {
+    Route::get('/widget/{widgetId}/script.js', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'getScript'])->name('script');
+    Route::post('/init', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'initSession'])->name('init');
+    Route::post('/send', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'sendMessage'])->name('send');
+    Route::get('/messages', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'getMessages'])->name('messages');
+    Route::post('/visitor-info', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'updateVisitorInfo'])->name('visitor-info');
+    Route::post('/disconnect', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'disconnect'])->name('disconnect');
+});
+
 Route::prefix('v1')->name('api.v1.')->group(function () {
 
     Route::prefix('whatsapp')->name('whatsapp.')->group(function () {

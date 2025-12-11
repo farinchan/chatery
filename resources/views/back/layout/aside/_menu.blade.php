@@ -107,25 +107,25 @@
             </div>
 
             <div data-kt-menu-trigger="click"
-                class="menu-item menu-accordion ">
+                class="menu-item menu-accordion @if (request()->routeIs('back.team.webchat.*')) here show @endif">
                 <span class="menu-link">
                     <span class="menu-icon">
-                        <i class="fa-brands fa-telegram fs-2"></i>
+                        <i class="fa-regular fa-comments fs-2"></i>
                     </span>
                     <span class="menu-title">Website Chat</span>
                     <span class="menu-arrow"></span>
                 </span>
                 <div class="menu-sub menu-sub-accordion">
                     <div class="menu-item">
-                        <a class="menu-link "
-                            href="#">
+                        <a class="menu-link @if (request()->routeIs('back.team.webchat.index', $current_team)) active @endif"
+                            href="{{ route('back.team.webchat.index', $current_team) }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
                             <span class="menu-title">Website Integration</span>
                         </a>
-                        <a class="menu-link "
-                            href="#">
+                        <a class="menu-link @if (request()->routeIs('back.team.webchat.chat', $current_team)) active @endif"
+                            href="{{ route('back.team.webchat.chat', $current_team) }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>

@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 use App\Http\Controllers\Back\DashboardController as BackDashboardController;
 use App\Http\Controllers\Back\WhatsappController as BackWhatsappController;
 use App\Http\Controllers\Back\TelegramController as BackTelegramController;
+use App\Http\Controllers\Back\WebsiteChatController as BackWebsiteChatController;
 use App\Http\Controllers\Back\DocumentationController as BackDocumentationController;
 
 
@@ -65,6 +66,17 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
             Route::delete('/destroy', [BackTelegramController::class, 'destroy'])->name('destroy');
             Route::post('/refresh-webhook', [BackTelegramController::class, 'refreshWebhook'])->name('refresh');
             Route::get('/status', [BackTelegramController::class, 'getStatus'])->name('status');
+        });
+
+        Route::prefix('webchat')->name('webchat.')->group(function () {
+            Route::get('/', [BackWebsiteChatController::class, 'index'])->name('index');
+            Route::get('/chat', [BackWebsiteChatController::class, 'chat'])->name('chat');
+            Route::post('/store', [BackWebsiteChatController::class, 'store'])->name('store');
+            Route::put('/update', [BackWebsiteChatController::class, 'update'])->name('update');
+            Route::delete('/destroy', [BackWebsiteChatController::class, 'destroy'])->name('destroy');
+            Route::put('/quick-replies', [BackWebsiteChatController::class, 'updateQuickReplies'])->name('quick-replies');
+            Route::put('/allowed-domains', [BackWebsiteChatController::class, 'updateAllowedDomains'])->name('allowed-domains');
+            Route::get('/status', [BackWebsiteChatController::class, 'getStatus'])->name('status');
         });
 
         Route::prefix('customer-service')->name('customer-service.')->group(function () {
