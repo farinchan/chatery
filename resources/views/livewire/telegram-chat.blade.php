@@ -533,7 +533,207 @@
             margin-right: 6px;
             opacity: 0.7;
         }
+
+        /* New Chat Modal */
+        .tg-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .tg-modal {
+            background: #ffffff;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .tg-modal-header {
+            background: var(--tg-bg-header);
+            color: #ffffff;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tg-modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .tg-modal-header button {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .tg-modal-body {
+            padding: 20px;
+        }
+
+        .tg-modal-body .form-group {
+            margin-bottom: 16px;
+        }
+
+        .tg-modal-body label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--tg-text-primary);
+            margin-bottom: 8px;
+        }
+
+        .tg-modal-body input,
+        .tg-modal-body textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--tg-border);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--tg-text-primary);
+            transition: border-color 0.2s;
+        }
+
+        .tg-modal-body input:focus,
+        .tg-modal-body textarea:focus {
+            outline: none;
+            border-color: var(--tg-active);
+        }
+
+        .tg-modal-body textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .tg-modal-body .form-hint {
+            font-size: 12px;
+            color: var(--tg-text-secondary);
+            margin-top: 4px;
+        }
+
+        .tg-modal-body .form-error {
+            font-size: 13px;
+            color: #dc3545;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #fff5f5;
+            border-radius: 6px;
+        }
+
+        .tg-modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--tg-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .tg-modal-footer .btn-cancel {
+            padding: 10px 20px;
+            border: 1px solid var(--tg-border);
+            background: #ffffff;
+            color: var(--tg-text-primary);
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tg-modal-footer .btn-cancel:hover {
+            background: var(--tg-hover);
+        }
+
+        .tg-modal-footer .btn-send {
+            padding: 10px 20px;
+            border: none;
+            background: var(--tg-active);
+            color: #ffffff;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tg-modal-footer .btn-send:hover {
+            background: var(--tg-blue-dark);
+        }
+
+        .tg-modal-footer .btn-send:disabled {
+            background: #c4c4c4;
+            cursor: not-allowed;
+        }
+
+        /* New chat button */
+        .tg-new-chat-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--tg-active);
+            color: #ffffff;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .tg-new-chat-btn:hover {
+            background: var(--tg-blue-dark);
+        }
     </style>
+
+    {{-- New Chat Modal --}}
+    @if ($showNewChatModal)
+        <div class="tg-modal-overlay" wire:click.self="closeNewChatModal">
+            <div class="tg-modal">
+                <div class="tg-modal-header">
+                    <h3><i class="fas fa-paper-plane me-2"></i>Percakapan Baru</h3>
+                    <button wire:click="closeNewChatModal">&times;</button>
+                </div>
+                <div class="tg-modal-body">
+                    <div class="form-group">
+                        <label>Chat ID atau Username</label>
+                        <input type="text" wire:model="newChatId" placeholder="Contoh: 123456789 atau @username">
+                        <div class="form-hint">Masukkan Chat ID (angka) atau Username Telegram (dengan atau tanpa @)</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Pesan</label>
+                        <textarea wire:model="newChatMessage" placeholder="Tulis pesan Anda..."></textarea>
+                    </div>
+                    @if ($newChatError)
+                        <div class="form-error">
+                            <i class="fas fa-exclamation-circle me-1"></i>{{ $newChatError }}
+                        </div>
+                    @endif
+                </div>
+                <div class="tg-modal-footer">
+                    <button class="btn-cancel" wire:click="closeNewChatModal">Batal</button>
+                    <button class="btn-send" wire:click="startNewChat" wire:loading.attr="disabled">
+                        <span wire:loading.remove wire:target="startNewChat">Kirim Pesan</span>
+                        <span wire:loading wire:target="startNewChat">Mengirim...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <div class="d-flex h-100" style="width: 100%;">
         {{-- Sidebar --}}
@@ -544,6 +744,9 @@
                     Telegram
                 </span>
                 <div class="tg-header-actions">
+                    <button wire:click="openNewChatModal" title="Percakapan Baru">
+                        <i class="fas fa-edit"></i>
+                    </button>
                     <button wire:click="refreshAll" title="Refresh">
                         <i class="fas fa-sync-alt"></i>
                     </button>
@@ -556,6 +759,12 @@
                     <input type="text" wire:model.live.debounce.300ms="searchQuery" placeholder="Cari...">
                 </div>
             </div>
+
+            {{-- New Chat Button --}}
+            <button class="tg-new-chat-btn" wire:click="openNewChatModal">
+                <i class="fas fa-plus"></i>
+                Mulai Percakapan Baru
+            </button>
 
             <div class="tg-chat-list">
                 @if (count($chats) > 0)

@@ -25,6 +25,12 @@ class TelegramChatComponent extends Component
     public $isSending = false;
     public $searchQuery = '';
 
+    // New chat modal
+    public $showNewChatModal = false;
+    public $newChatId = '';
+    public $newChatMessage = '';
+    public $newChatError = '';
+
     protected $listeners = ['refreshChats' => 'loadChats', 'refreshMessages' => 'loadMessages'];
 
     public function mount($nameId = null)
@@ -202,6 +208,91 @@ class TelegramChatComponent extends Component
     public function updatedSearchQuery()
     {
         $this->loadChats();
+    }
+
+    public function openNewChatModal()
+    {
+        $this->showNewChatModal = true;
+        $this->newChatId = '';
+        $this->newChatMessage = '';
+        $this->newChatError = '';
+    }
+
+    public function closeNewChatModal()
+    {
+        $this->showNewChatModal = false;
+        $this->newChatId = '';
+        $this->newChatMessage = '';
+        $this->newChatError = '';
+    }
+
+    public function startNewChat()
+    {
+        $this->newChatError = '';
+
+        if (empty($this->newChatId)) {
+            $this->newChatError = 'Chat ID atau Username harus diisi';
+            return;
+        }
+
+        if (empty($this->newChatMessage)) {
+            $this->newChatError = 'Pesan harus diisi';
+            return;
+        }
+
+        $telegramBot = $this->getTelegramBot();
+        if (!$telegramBot) {
+            $this->newChatError = 'Bot tidak ditemukan';
+            return;
+        }
+
+        try {
+            $service = TelegramService::forBot($telegramBot);
+
+            // Determine if input is numeric (chat_id) or username
+            $chatId = $this->newChatId;
+            if (!is_numeric($chatId) && !str_starts_with($chatId, '@')) {
+                $chatId = '@' . $chatId;
+            }
+
+            $result = $service->sendMessage($chatId, $this->newChatMessage);
+
+            if ($result) {
+                // Create or update chat record
+                $chatInfo = $service->getChat($chatId);
+
+                if ($chatInfo) {
+                    $chat = TelegramChat::updateOrCreate(
+                        [
+                            'telegram_bot_id' => $telegramBot->id,
+                            'chat_id' => $chatInfo['id'],
+                        ],
+                        [
+                            'chat_type' => $chatInfo['type'] ?? 'private',
+                            'title' => $chatInfo['title'] ?? null,
+                            'username' => $chatInfo['username'] ?? null,
+                            'first_name' => $chatInfo['first_name'] ?? null,
+                            'last_name' => $chatInfo['last_name'] ?? null,
+                            'last_message_at' => now(),
+                        ]
+                    );
+
+                    // Select the new chat
+                    $this->closeNewChatModal();
+                    $this->loadChats();
+                    $this->selectChat($chat->id);
+                } else {
+                    $this->closeNewChatModal();
+                    $this->loadChats();
+                }
+
+                session()->flash('success', 'Pesan berhasil dikirim!');
+            } else {
+                $this->newChatError = 'Gagal mengirim pesan. Pastikan Chat ID atau Username valid.';
+            }
+        } catch (\Exception $e) {
+            $this->newChatError = 'Error: ' . $e->getMessage();
+        }
     }
 
     public function render()
