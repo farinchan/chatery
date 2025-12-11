@@ -15,10 +15,8 @@ use App\Http\Controllers\Back\DocumentationController as BackDocumentationContro
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
-route::get('/home', [HomeController::class, 'index'])->name('home');
+
+route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Authentication Routes...
 Route::get('login', [AuthLoginController::class, 'login'])->name('login');
