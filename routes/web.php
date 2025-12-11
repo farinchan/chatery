@@ -19,6 +19,8 @@ use App\Http\Controllers\Back\SettingController as BackSettingController;
 
 
 route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/visit', [HomeController::class, 'vistWebsite'])->name('visit.ajax');
+route::post('/send-message', [HomeController::class, 'sendMessage'])->name('message.send');
 
 // Authentication Routes...
 Route::get('login', [AuthLoginController::class, 'login'])->name('login');

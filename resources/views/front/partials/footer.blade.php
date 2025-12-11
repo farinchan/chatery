@@ -1,12 +1,12 @@
-<footer class="default-padding bg-light">
+<footer class="default-padding bg-light" style="padding-top: 60px; padding-bottom: 20px;">
         <div class="container">
             <div class="f-items">
                 <div class="row">
                     <div class="col-lg-3 col-md-6 item">
                         <div class="f-item">
-                            <img src="assets/img/logo.png" alt="Logo">
+                            <img src="{{ Storage::url($setting_web->logo) }}" alt="Logo" style="width: 180px; margin-bottom: 20px;" />
                             <p>
-                                Excellence decisively nay man yet impression for contrasted remarkably. There spoke happy for you are out. Fertile how old address did showing because sitting replied six. Had arose guest visit going off child she new.
+                                {{ Str::limit(strip_tags($setting_web->about), 150) }}
                             </p>
                             <a href="#" class="btn circle btn-theme effect btn-sm">Get Started</a>
                         </div>
@@ -22,29 +22,26 @@
                                     <a href="#"><i class="fas fa-angle-right"></i> About us</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fas fa-angle-right"></i> Compnay History</a>
-                                </li>
-                                <li>
                                     <a href="#"><i class="fas fa-angle-right"></i> Features</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fas fa-angle-right"></i> Blog Page</a>
+                                    <a href="#"><i class="fas fa-angle-right"></i> News</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 item">
                         <div class="f-item link">
-                            <h4>Community</h4>
+                            <h4>Company</h4>
                             <ul>
                                 <li>
-                                    <a href="#"><i class="fas fa-angle-right"></i> Career</a>
+                                    <a href="#"><i class="fas fa-angle-right"></i> Torkata</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fas fa-angle-right"></i> Leadership</a>
+                                    <a href="#"><i class="fas fa-angle-right"></i> Torkata Tech</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fas fa-angle-right"></i> Strategy</a>
+                                    <a href="#"><i class="fas fa-angle-right"></i> Torkata Travel</a>
                                 </li>
                                 <li>
                                     <a href="#"><i class="fas fa-angle-right"></i> Services</a>
@@ -57,9 +54,9 @@
                     </div>
                     <div class="col-lg-3 col-md-6 item">
                         <div class="f-item twitter-widget">
-                            <h4>Contact Info</h4>
+                            <h4>Kontak kami</h4>
                             <p>
-                                Estimating stimulated how reasonably precaution diminution she simplicity
+                                Kami siap membantu Anda. Hubungi kami melalui detail di bawah ini.
                             </p>
                             <div class="address">
                                 <ul>
@@ -69,7 +66,7 @@
                                         </div>
                                         <div class="info">
                                             <h5>Website:</h5>
-                                            <span>www.validtheme.com</span>
+                                            <span>{{ $setting_web->website }}</span>
                                         </div>
                                     </li>
                                     <li>
@@ -78,7 +75,7 @@
                                         </div>
                                         <div class="info">
                                             <h5>Email:</h5>
-                                            <span>support@validtheme.com</span>
+                                            <span>{{ $setting_web->email }}</span>
                                         </div>
                                     </li>
                                     <li>
@@ -87,7 +84,7 @@
                                         </div>
                                         <div class="info">
                                             <h5>Phone:</h5>
-                                            <span>+44-20-7328-4499</span>
+                                            <span>{{ $setting_web->phone }}</span>
                                         </div>
                                     </li>
                                 </ul>
@@ -101,7 +98,7 @@
                 <div class="col-lg-12">
                     <div class="row">
                         <div class="col-lg-6">
-                            <p>&copy; Copyright 2018. All Rights Reserved by <a href="#">validthemes</a></p>
+                            <p>&copy; Copyright {{ date('Y') }}. All Rights Reserved by <a href="https://torkatatech.com">Torkata Tech Solution</a></p>
                         </div>
                         <div class="col-lg-6 text-right link">
                             <ul>

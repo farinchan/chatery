@@ -1,5 +1,5 @@
-/*================================ 
-    #RESPONSIVE CSS 
+/*================================
+    #RESPONSIVE CSS
 ====================================*/
 
 /* Tablet Layout: 768px.*/
@@ -126,21 +126,21 @@
     margin-top: 0;
   }
 
-  .about-area .services-info .single-item:nth-child(1) .item, 
+  .about-area .services-info .single-item:nth-child(1) .item,
   .about-area .services-info .single-item:nth-child(4) .item {
     background: #ffffff none repeat scroll 0 0;
   }
 
-  .about-area .services-info .single-item:nth-child(1) .item h4, 
-  .about-area .services-info .single-item:nth-child(4) .item h4, 
-  .about-area .services-info .single-item:nth-child(1) .item p, 
+  .about-area .services-info .single-item:nth-child(1) .item h4,
+  .about-area .services-info .single-item:nth-child(4) .item h4,
+  .about-area .services-info .single-item:nth-child(1) .item p,
   .about-area .services-info .single-item:nth-child(4) .item p {
     color: #232323;
   }
 
-  .about-area .services-info .single-item:nth-child(1) .item i, 
+  .about-area .services-info .single-item:nth-child(1) .item i,
   .about-area .services-info .single-item:nth-child(4) .item i {
-    color: #4ac4f3;
+    color: #1888FF;
   }
 
   .about-area .top-features .single-item {
@@ -212,7 +212,7 @@
 
 
   /* Features */
-  .features-area.cell-items .features-thumb, 
+  .features-area.cell-items .features-thumb,
   .features-area.cell-items .features-items {
     display: block;
   }
@@ -221,7 +221,7 @@
     padding-right: 15px;
   }
 
-  .features-area.cell-items .features-items .single-item:first-child, 
+  .features-area.cell-items .features-items .single-item:first-child,
   .features-area.cell-items .features-items .single-item:nth-child(2) {
     margin-top: 50px;
   }
@@ -248,7 +248,7 @@
   }
 
   /* Overview */
-  .overview-area .overview-items .item .thumb, 
+  .overview-area .overview-items .item .thumb,
   .overview-area .overview-items .item .info {
     display: block;
   }
@@ -484,7 +484,7 @@
   .banner-area.transparent-nav .content {
     padding-top: 110px;
   }
-  
+
   .video-play-button {
     margin: 0;
   }
@@ -532,26 +532,26 @@
   .about-area .services-info .item {
     text-align: center;
   }
-  
+
   .about-area .services-info {
     margin-top: 0;
   }
 
-  .about-area .services-info .single-item:nth-child(1) .item, 
+  .about-area .services-info .single-item:nth-child(1) .item,
   .about-area .services-info .single-item:nth-child(4) .item {
     background: #ffffff none repeat scroll 0 0;
   }
 
-  .about-area .services-info .single-item:nth-child(1) .item h4, 
-  .about-area .services-info .single-item:nth-child(4) .item h4, 
-  .about-area .services-info .single-item:nth-child(1) .item p, 
+  .about-area .services-info .single-item:nth-child(1) .item h4,
+  .about-area .services-info .single-item:nth-child(4) .item h4,
+  .about-area .services-info .single-item:nth-child(1) .item p,
   .about-area .services-info .single-item:nth-child(4) .item p {
     color: #232323;
   }
 
-  .about-area .services-info .single-item:nth-child(1) .item i, 
+  .about-area .services-info .single-item:nth-child(1) .item i,
   .about-area .services-info .single-item:nth-child(4) .item i {
-    color: #4ac4f3;
+    color: #1888FF;
   }
 
   .about-area .top-features .single-item {
@@ -610,7 +610,7 @@
   }
 
   /* Features */
-  .features-area.cell-items .features-thumb, 
+  .features-area.cell-items .features-thumb,
   .features-area.cell-items .features-items {
     display: block;
     text-align: center;
@@ -631,7 +631,7 @@
     padding-right: 15px;
   }
 
-  .features-area.cell-items .features-items .single-item:first-child, 
+  .features-area.cell-items .features-items .single-item:first-child,
   .features-area.cell-items .features-items .single-item:nth-child(2) {
     margin-top: 50px;
   }
@@ -692,11 +692,11 @@
 
 
   /* Overview */
-  .overview-area .overview-items .item .thumb, 
+  .overview-area .overview-items .item .thumb,
   .overview-area .overview-items .item .info {
     display: block;
   }
-  
+
   .overview-area.carousel-shadow .owl-dots {
     margin-bottom: -10px;
   }
@@ -768,7 +768,7 @@
     padding-top: 50px;
     padding-bottom: 50px;
   }
-  
+
 
   /* Error */
   .error-page-area h1 {
@@ -815,7 +815,7 @@
 }
 
 
-@media only screen and (max-width: 600px) { 
+@media only screen and (max-width: 600px) {
 .banner-area ul {
   display: none;
 }

@@ -1,7 +1,7 @@
 <header id="home">
 
         <!-- Start Navigation -->
-        <nav class="navbar navbar-default navbar-sticky bootsnav on no-full">
+        <nav class="navbar navbar-default navbar-fixed dark no-background bootsnav">
 
             <div class="container">
 
@@ -12,7 +12,7 @@
                             <a href="{{ route("login") }}">Login</a>
                         </li>
                         <li>
-                            <a href="{{ route("register") }}">Bergabung sekarang</a>
+                            <a href="{{ route("register") }}">Bergabung</a>
                         </li>
                     </ul>
                 </div>
@@ -24,7 +24,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
                     <a class="navbar-brand" href="index.html">
-                        <img src="{{ Storage::url($setting_web->logo) }}" class="logo logo-scrolled" alt="Logo">
+                        <img src="{{ Storage::url($setting_web->logo) }}" class="logo logo-scrolled" alt="Logo" style="height: 50px;" />
                     </a>
                 </div>
                 <!-- End Header Navigation -->

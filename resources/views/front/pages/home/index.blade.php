@@ -499,85 +499,135 @@
                         <ul class="info">
                             <li>
                                 <i class="fas fa-map-marked-alt"></i>
-                                <span>22 Baker Street,<br> London, United Kingdom,<br> W1U 3BW</span>
+                                <span>{{ $setting->address }}</span>
                             </li>
                             <li>
                                 <i class="fas fa-phone"></i>
-                                <span>+44-20-7328-4499</span>
+                                <span>{{ $setting->phone }}</span>
                             </li>
                             <li>
                                 <i class="fas fa-envelope-open"></i>
-                                <span>info@yourdomain.com</span>
+                                <span>{{ $setting->email }}</span>
                             </li>
                         </ul>
                         <h4>Social Address</h4>
                         <ul class="social">
+                            @if($setting->facebook)
                             <li class="facebook">
-                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="{{ $setting->facebook }}"><i class="fab fa-facebook-f"></i></a>
                             </li>
-                            <li class="twitter">
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                            </li>
-                            <li class="pinterest">
-                                <a href="#"><i class="fab fa-pinterest"></i></a>
-                            </li>
+                            @endif
+                            @if($setting->instagram)
                             <li class="instagram">
-                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="{{ $setting->instagram }}"><i class="fab fa-instagram"></i></a>
                             </li>
+                            @endif
+                            @if($setting->tiktok)
+                            <li class="tiktok">
+                                <a href="{{ $setting->tiktok }}"><i class="fab fa-tiktok"></i></a>
+                            </li>
+                            @endif
+                            @if($setting->twitter)
+                            <li class="twitter">
+                                <a href="{{ $setting->twitter }}"><i class="fab fa-twitter"></i></a>
+                            </li>
+                            @endif
+                            @if($setting->youtube)
+                            <li class="youtube">
+                                <a href="{{ $setting->youtube }}"><i class="fab fa-youtube"></i></a>
+                            </li>
+                            @endif
+                            @if($setting->linkedin)
+                            <li class="linkedin">
+                                <a href="{{ $setting->linkedin }}"><i class="fab fa-linkedin-in"></i></a>
+                            </li>
+                            @endif
                         </ul>
                         <div class="google-maps">
-                            <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d14767.262289338461!2d70.79414485000001!3d22.284975!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1424308883981"></iframe>
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d559.7262225754869!2d100.37070651680263!3d-0.9456240075044083!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b982c9fe455f%3A0x5061d73acccaf624!2sEmily%20Queen%20Home%20Photo%20Studio!5e0!3m2!1sid!2sid!4v1765453719413!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 contact-form">
                     <h2>Hubungi Tim Chatery</h2>
-                    <form action="{{ asset('front/mail/contact.php') }}" method="POST" class="contact-form">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+                    <form action="{{ route('message.send') }}" method="POST" class="contact-form">
+                        @csrf
                         <div class="col-lg-12">
                             <div class="row">
                                 <div class="form-group">
-                                    <input class="form-control" id="name" name="name" placeholder="Name"
-                                        type="text">
-                                    <span class="alert-error"></span>
+                                    <input class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Nama Lengkap *"
+                                        type="text" value="{{ old('name') }}" required>
+                                    @error('name')
+                                        <span class="alert-error text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12">
                             <div class="row">
                                 <div class="form-group">
-                                    <input class="form-control" id="email" name="email" placeholder="Email*"
-                                        type="email">
-                                    <span class="alert-error"></span>
+                                    <input class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email *"
+                                        type="email" value="{{ old('email') }}" required>
+                                    @error('email')
+                                        <span class="alert-error text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12">
                             <div class="row">
                                 <div class="form-group">
-                                    <input class="form-control" id="phone" name="phone" placeholder="Phone"
-                                        type="text">
-                                    <span class="alert-error"></span>
+                                    <input class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" placeholder="No. Telepon"
+                                        type="text" value="{{ old('phone') }}">
+                                    @error('phone')
+                                        <span class="alert-error text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="form-group">
+                                    <input class="form-control @error('subject') is-invalid @enderror" id="subject" name="subject" placeholder="Subjek *"
+                                        type="text" value="{{ old('subject') }}" required>
+                                    @error('subject')
+                                        <span class="alert-error text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12">
                             <div class="row">
                                 <div class="form-group comments">
-                                    <textarea class="form-control" id="comments" name="comments" placeholder="Tell Us About Project *"></textarea>
+                                    <textarea class="form-control @error('message') is-invalid @enderror" id="message" name="message" placeholder="Pesan Anda *" required>{{ old('message') }}</textarea>
+                                    @error('message')
+                                        <span class="alert-error text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12">
                             <div class="row">
                                 <button type="submit" name="submit" id="submit">
-                                    Send Message <i class="fa fa-paper-plane"></i>
+                                    Kirim Pesan <i class="fa fa-paper-plane"></i>
                                 </button>
                             </div>
-                        </div>
-                        <!-- Alert Message -->
-                        <div class="col-lg-12 alert-notification">
-                            <div id="message" class="alert-msg"></div>
                         </div>
                     </form>
                 </div>

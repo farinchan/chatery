@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\Message;
 use App\Models\SettingWebsite;
 use App\Models\Visitor;
 use Illuminate\Http\Request;
@@ -23,6 +24,7 @@ class HomeController extends Controller
                 'keywords' => $setting_web->name . ', ' . 'Chatery, Chatery App, Chatery Indonesia',
                 'favicon' => $setting_web->favicon
             ],
+            'setting' => $setting_web,
 
         ];
         return view('front.pages.home.index', $data);
@@ -52,5 +54,27 @@ class HomeController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()], 500);
         }
+    }
+
+    public function sendMessage(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        // Simpan pesan ke database
+        $message = new Message();
+        $message->name = $request->name;
+        $message->email = $request->email;
+        $message->phone = $request->phone;
+        $message->subject = $request->subject;
+        $message->message = $request->message;
+        $message->save();
+
+        return redirect()->back()->with('success', 'Pesan Anda telah terkirim. Terima kasih!');
     }
 }
