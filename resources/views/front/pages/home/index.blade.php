@@ -652,7 +652,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-6 thumb">
-                    <img src="{{ asset('front/img/700x800.png') }}" alt="Thumb">
+                    <img src="{{ asset('front/img/contact.png') }}" alt="Thumb">
                 </div>
                 <div class="col-lg-6 faq-items default-padding-bottom">
                     <!-- Start Accordion -->
