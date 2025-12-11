@@ -113,6 +113,7 @@ class TelegramChatComponent extends Component
             ];
         }
         $this->loadMessages();
+        // dd($this->loadMessages());
 
         // Mark messages as read
         TelegramMessage::where('telegram_chat_id', $chatId)
