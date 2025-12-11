@@ -29,7 +29,7 @@ class DashboardController extends Controller
 
         $data = [
             'title' => 'Dashboard',
-            'breadcrumb' => [
+            'breadcrumbs' => [
                 [
                     'name' => 'Dashboard',
                     'link' => route('back.index')

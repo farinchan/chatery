@@ -172,113 +172,124 @@
                                 </div>
                             </div>
                             <div class="card-body p-9 pt-4">
-                                @if($teams->count() > 0)
-                                <div class="row g-6">
-                                    @foreach ($teams as $teamUser)
-                                        <div class="col-md-6 col-xl-4">
-                                            <div class="card border border-gray-300 border-hover shadow-sm h-100">
-                                                <div class="card-body d-flex flex-column p-6">
-                                                    {{-- Header dengan Logo dan Info --}}
-                                                    <div class="d-flex align-items-center mb-5">
-                                                        <div class="symbol symbol-60px symbol-circle me-4">
-                                                            <img src="{{ $teamUser->team->getLogo() }}" alt="{{ $teamUser->team->name }}" />
+                                @if ($teams->count() > 0)
+                                    <div class="row g-6">
+                                        @foreach ($teams as $teamUser)
+                                            <div class="col-md-6 ">
+                                                <div class="card border border-gray-300 border-hover shadow-sm h-100">
+                                                    <div class="card-body d-flex flex-column p-6">
+                                                        {{-- Header dengan Logo dan Info --}}
+                                                        <div class="d-flex align-items-center mb-5">
+                                                            <div class="symbol symbol-60px symbol-circle me-4">
+                                                                <img src="{{ $teamUser->team->getLogo() }}"
+                                                                    alt="{{ $teamUser->team->name }}" />
+                                                            </div>
+                                                            <div class="flex-grow-1">
+                                                                <a href="{{ route('back.team.index', $teamUser->team->name_id) }}"
+                                                                    class="text-gray-800 text-hover-primary fs-4 fw-bold mb-1 d-block">
+                                                                    {{ $teamUser->team->name }}
+                                                                </a>
+                                                                <span
+                                                                    class="badge badge-light-{{ $teamUser->role == 'owner' ? 'danger' : ($teamUser->role == 'admin' ? 'warning' : 'primary') }}">
+                                                                    {{ ucfirst($teamUser->role) }}
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        <div class="flex-grow-1">
-                                                            <a href="{{ route('back.team.index', $teamUser->team->name_id) }}"
-                                                               class="text-gray-800 text-hover-primary fs-4 fw-bold mb-1 d-block">
-                                                                {{ $teamUser->team->name }}
-                                                            </a>
-                                                            <span class="badge badge-light-{{ $teamUser->role == 'owner' ? 'danger' : ($teamUser->role == 'admin' ? 'warning' : 'primary') }}">
-                                                                {{ ucfirst($teamUser->role) }}
-                                                            </span>
-                                                        </div>
-                                                    </div>
 
-                                                    {{-- Info Team --}}
-                                                    <div class="mb-5">
-                                                        @if($teamUser->team->email)
-                                                        <div class="d-flex align-items-center text-gray-600 mb-2">
-                                                            <i class="ki-duotone ki-sms fs-5 me-2">
-                                                                <span class="path1"></span>
-                                                                <span class="path2"></span>
-                                                            </i>
-                                                            <span class="fs-7">{{ $teamUser->team->email }}</span>
+                                                        {{-- Info Team --}}
+                                                        <div class="mb-5">
+                                                            @if ($teamUser->team->email)
+                                                                <div class="d-flex align-items-center text-gray-600 mb-2">
+                                                                    <i class="ki-duotone ki-sms fs-5 me-2">
+                                                                        <span class="path1"></span>
+                                                                        <span class="path2"></span>
+                                                                    </i>
+                                                                    <span
+                                                                        class="fs-7">{{ $teamUser->team->email }}</span>
+                                                                </div>
+                                                            @endif
+                                                            @if ($teamUser->team->phone)
+                                                                <div class="d-flex align-items-center text-gray-600 mb-2">
+                                                                    <i class="ki-duotone ki-phone fs-5 me-2">
+                                                                        <span class="path1"></span>
+                                                                        <span class="path2"></span>
+                                                                    </i>
+                                                                    <span
+                                                                        class="fs-7">{{ $teamUser->team->phone }}</span>
+                                                                </div>
+                                                            @endif
                                                         </div>
-                                                        @endif
-                                                        @if($teamUser->team->phone)
-                                                        <div class="d-flex align-items-center text-gray-600 mb-2">
-                                                            <i class="ki-duotone ki-phone fs-5 me-2">
-                                                                <span class="path1"></span>
-                                                                <span class="path2"></span>
-                                                            </i>
-                                                            <span class="fs-7">{{ $teamUser->team->phone }}</span>
-                                                        </div>
-                                                        @endif
-                                                    </div>
 
-                                                    {{-- Stats --}}
-                                                    <div class="d-flex justify-content-between mb-5">
-                                                        <div class="text-center">
-                                                            <span class="fs-2 fw-bold text-gray-800">{{ $teamUser->team->teamUsers->count() }}</span>
-                                                            <span class="fs-7 fw-semibold text-gray-500 d-block">Member</span>
+                                                        {{-- Stats --}}
+                                                        <div class="d-flex justify-content-between mb-5">
+                                                            <div class="text-center">
+                                                                <span
+                                                                    class="fs-2 fw-bold text-gray-800">{{ $teamUser->team->teamUsers->count() }}</span>
+                                                                <span
+                                                                    class="fs-7 fw-semibold text-gray-500 d-block">Member</span>
+                                                            </div>
+                                                            <div class="border-start"></div>
+                                                            <div class="text-center">
+                                                                <span class="fs-2 fw-bold text-success">-</span>
+                                                                <span
+                                                                    class="fs-7 fw-semibold text-gray-500 d-block">Online</span>
+                                                            </div>
+                                                            <div class="border-start"></div>
+                                                            <div class="text-center">
+                                                                <span
+                                                                    class="badge badge-light-{{ $teamUser->status == 'active' ? 'success' : 'danger' }} fs-7">
+                                                                    {{ ucfirst($teamUser->status) }}
+                                                                </span>
+                                                                <span
+                                                                    class="fs-7 fw-semibold text-gray-500 d-block">Status</span>
+                                                            </div>
                                                         </div>
-                                                        <div class="border-start"></div>
-                                                        <div class="text-center">
-                                                            <span class="fs-2 fw-bold text-success">-</span>
-                                                            <span class="fs-7 fw-semibold text-gray-500 d-block">Online</span>
-                                                        </div>
-                                                        <div class="border-start"></div>
-                                                        <div class="text-center">
-                                                            <span class="badge badge-light-{{ $teamUser->status == 'active' ? 'success' : 'danger' }} fs-7">
-                                                                {{ ucfirst($teamUser->status) }}
-                                                            </span>
-                                                            <span class="fs-7 fw-semibold text-gray-500 d-block">Status</span>
-                                                        </div>
-                                                    </div>
 
 
-                                                    {{-- Action Button --}}
-                                                    <div class="mt-auto">
-                                                        @if ($teamUser->status == 'active')
-                                                            <a href="{{ route('back.team.index', $teamUser->team->name_id) }}"
-                                                                class="btn btn-primary btn-sm w-100">
-                                                                <i class="ki-duotone ki-setting-2 fs-4 me-1">
-                                                                    <span class="path1"></span>
-                                                                    <span class="path2"></span>
-                                                                </i>
-                                                                Kelola Team
-                                                            </a>
-                                                        @else
-                                                            <button class="btn btn-secondary btn-sm w-100" disabled>
-                                                                <i class="ki-duotone ki-lock fs-4 me-1">
-                                                                    <span class="path1"></span>
-                                                                    <span class="path2"></span>
-                                                                </i>
-                                                                Akses Diblokir
-                                                            </button>
-                                                        @endif
+                                                        {{-- Action Button --}}
+                                                        <div class="mt-auto">
+                                                            @if ($teamUser->status == 'active')
+                                                                <a href="{{ route('back.team.index', $teamUser->team->name_id) }}"
+                                                                    class="btn btn-primary btn-sm w-100">
+                                                                    <i class="ki-duotone ki-setting-2 fs-4 me-1">
+                                                                        <span class="path1"></span>
+                                                                        <span class="path2"></span>
+                                                                    </i>
+                                                                    Kelola Team
+                                                                </a>
+                                                            @else
+                                                                <button class="btn btn-secondary btn-sm w-100" disabled>
+                                                                    <i class="ki-duotone ki-lock fs-4 me-1">
+                                                                        <span class="path1"></span>
+                                                                        <span class="path2"></span>
+                                                                    </i>
+                                                                    Akses Diblokir
+                                                                </button>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endforeach
-                                </div>
+                                        @endforeach
+                                    </div>
                                 @else
-                                <div class="text-center py-10">
-                                    <i class="ki-duotone ki-people fs-5tx text-gray-300 mb-5">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                        <span class="path3"></span>
-                                        <span class="path4"></span>
-                                        <span class="path5"></span>
-                                    </i>
-                                    <div class="fs-4 fw-bold text-gray-600 mb-2">Belum ada Team</div>
-                                    <div class="fs-6 text-gray-500 mb-5">Buat team pertama Anda untuk mulai mengelola WhatsApp</div>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_add_team">
-                                        <i class="ki-duotone ki-plus fs-3"></i>
-                                        Buat Team Baru
-                                    </button>
-                                </div>
+                                    <div class="text-center py-10">
+                                        <i class="ki-duotone ki-people fs-5tx text-gray-300 mb-5">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                            <span class="path5"></span>
+                                        </i>
+                                        <div class="fs-4 fw-bold text-gray-600 mb-2">Belum ada Team</div>
+                                        <div class="fs-6 text-gray-500 mb-5">Buat team pertama Anda untuk mulai mengelola
+                                            WhatsApp</div>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#modal_add_team">
+                                            <i class="ki-duotone ki-plus fs-3"></i>
+                                            Buat Team Baru
+                                        </button>
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -439,7 +450,9 @@
                             <label class="form-label">Logo Team</label>
                             <div class="d-flex align-items-center">
                                 <div class="symbol symbol-100px symbol-circle me-5">
-                                    <img id="logo_preview" src="https://ui-avatars.com/api/?name=T&background=3699FF&color=fff&size=100" alt="Logo Preview" />
+                                    <img id="logo_preview"
+                                        src="https://ui-avatars.com/api/?name=T&background=3699FF&color=fff&size=100"
+                                        alt="Logo Preview" />
                                 </div>
                                 <div>
                                     <label for="logo_input" class="btn btn-sm btn-light-primary me-2">
@@ -449,7 +462,8 @@
                                         </i>
                                         Pilih Logo
                                     </label>
-                                    <input type="file" id="logo_input" name="logo" class="d-none" accept="image/*" onchange="previewLogo(this)" />
+                                    <input type="file" id="logo_input" name="logo" class="d-none"
+                                        accept="image/*" onchange="previewLogo(this)" />
                                     <div class="form-text mt-2">Format: JPG, PNG, GIF (Max 2MB)</div>
                                 </div>
                             </div>
@@ -458,9 +472,9 @@
                         {{-- Team Name --}}
                         <div class="mb-5">
                             <label for="team_name" class="required form-label">Nama Team</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                id="team_name" name="name" placeholder="Contoh: Marketing Team"
-                                value="{{ old('name') }}" required />
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="team_name"
+                                name="name" placeholder="Contoh: Marketing Team" value="{{ old('name') }}"
+                                required />
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -468,7 +482,8 @@
 
                         {{-- Email --}}
                         <div class="mb-5">
-                            <label for="team_email" class="form-label">Email Team <span class="text-muted">(Opsional)</span></label>
+                            <label for="team_email" class="form-label">Email Team <span
+                                    class="text-muted">(Opsional)</span></label>
                             <input type="email" class="form-control @error('email') is-invalid @enderror"
                                 id="team_email" name="email" placeholder="team@example.com"
                                 value="{{ old('email') }}" />
@@ -479,7 +494,8 @@
 
                         {{-- Phone --}}
                         <div class="mb-5">
-                            <label for="team_phone" class="form-label">Nomor Telepon <span class="text-muted">(Opsional)</span></label>
+                            <label for="team_phone" class="form-label">Nomor Telepon <span
+                                    class="text-muted">(Opsional)</span></label>
                             <input type="text" class="form-control @error('phone') is-invalid @enderror"
                                 id="team_phone" name="phone" placeholder="08xxxxxxxxxx"
                                 value="{{ old('phone') }}" />
@@ -490,9 +506,10 @@
 
                         {{-- Address --}}
                         <div class="mb-5">
-                            <label for="team_address" class="form-label">Alamat <span class="text-muted">(Opsional)</span></label>
-                            <textarea class="form-control @error('address') is-invalid @enderror"
-                                id="team_address" name="address" rows="2" placeholder="Alamat lengkap team">{{ old('address') }}</textarea>
+                            <label for="team_address" class="form-label">Alamat <span
+                                    class="text-muted">(Opsional)</span></label>
+                            <textarea class="form-control @error('address') is-invalid @enderror" id="team_address" name="address"
+                                rows="2" placeholder="Alamat lengkap team">{{ old('address') }}</textarea>
                             @error('address')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -507,7 +524,8 @@
                             <div class="d-flex flex-stack flex-grow-1">
                                 <div class="fw-semibold">
                                     <div class="fs-6 text-gray-700">
-                                        Anda akan menjadi owner dari team ini dan dapat mengundang member lain untuk bergabung.
+                                        Anda akan menjadi owner dari team ini dan dapat mengundang member lain untuk
+                                        bergabung.
                                     </div>
                                 </div>
                             </div>
@@ -530,17 +548,15 @@
     </div>
 @endsection
 @section('scripts')
-<script>
-    
-
-    function previewLogo(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('logo_preview').src = e.target.result;
+    <script>
+        function previewLogo(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('logo_preview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
             }
-            reader.readAsDataURL(input.files[0]);
         }
-    }
-</script>
+    </script>
 @endsection

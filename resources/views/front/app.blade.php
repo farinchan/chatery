@@ -78,6 +78,8 @@
     <script src="{{ asset('front/js/count-to.js') }}"></script>
     <script src="{{ asset('front/js/bootsnav.js') }}"></script>
     <script src="{{ asset('front/js/main.js') }}"></script>
+    <script src="http://127.0.0.1:8000/api/webchat/widget/f9784bc2-e39d-4b3d-b13a-5ab1e3c285ad/script.js" async></script>
+
 
 </body>
 
