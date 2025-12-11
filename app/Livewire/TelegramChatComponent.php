@@ -15,11 +15,11 @@ class TelegramChatComponent extends Component
     use WithFileUploads;
 
     public $teamNameId = '';
-    public $telegramBot = null;
+    public $telegramBotId = null;
     public $chats = [];
     public $messages = [];
     public $selectedChatId = null;
-    public $selectedChat = null;
+    public $selectedChatData = null;
     public $messageText = '';
     public $isLoading = false;
     public $isSending = false;
@@ -42,17 +42,28 @@ class TelegramChatComponent extends Component
 
         $team = \App\Models\Team::where('name_id', $this->teamNameId)->first();
         if ($team) {
-            $this->telegramBot = TelegramBot::where('team_id', $team->id)->first();
+            $bot = TelegramBot::where('team_id', $team->id)->first();
+            $this->telegramBotId = $bot ? $bot->id : null;
         }
+    }
+
+    public function getTelegramBot()
+    {
+        return $this->telegramBotId ? TelegramBot::find($this->telegramBotId) : null;
+    }
+
+    public function getSelectedChat()
+    {
+        return $this->selectedChatId ? TelegramChat::find($this->selectedChatId) : null;
     }
 
     public function loadChats()
     {
-        if (!$this->telegramBot) {
+        if (!$this->telegramBotId) {
             return;
         }
 
-        $query = TelegramChat::where('telegram_bot_id', $this->telegramBot->id)
+        $query = TelegramChat::where('telegram_bot_id', $this->telegramBotId)
             ->withCount(['messages as unread_count' => function ($query) {
                 $query->where('is_read', false)->where('direction', 'incoming');
             }])
@@ -90,7 +101,17 @@ class TelegramChatComponent extends Component
     public function selectChat($chatId)
     {
         $this->selectedChatId = $chatId;
-        $this->selectedChat = TelegramChat::find($chatId);
+        $chat = TelegramChat::find($chatId);
+        if ($chat) {
+            $this->selectedChatData = [
+                'id' => $chat->id,
+                'chat_id' => $chat->chat_id,
+                'name' => $chat->getDisplayName(),
+                'photo' => $chat->photo,
+                'chat_type' => $chat->chat_type,
+                'username' => $chat->username,
+            ];
+        }
         $this->loadMessages();
 
         // Mark messages as read
@@ -140,7 +161,10 @@ class TelegramChatComponent extends Component
             'messageText' => 'required|string|min:1',
         ]);
 
-        if (!$this->selectedChat || !$this->telegramBot) {
+        $selectedChat = $this->getSelectedChat();
+        $telegramBot = $this->getTelegramBot();
+
+        if (!$selectedChat || !$telegramBot) {
             session()->flash('error', 'Silakan pilih chat terlebih dahulu');
             return;
         }
@@ -148,8 +172,8 @@ class TelegramChatComponent extends Component
         $this->isSending = true;
 
         try {
-            $service = TelegramService::forBot($this->telegramBot);
-            $result = $service->sendMessage($this->selectedChat->chat_id, $this->messageText);
+            $service = TelegramService::forBot($telegramBot);
+            $result = $service->sendMessage($selectedChat->chat_id, $this->messageText);
 
             if ($result) {
                 $this->messageText = '';

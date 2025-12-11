@@ -47,8 +47,9 @@ class TelegramChat extends Model
         return $this->title ?: 'Unknown Chat';
     }
 
-    public function getPhotoAttribute($value): string
+    public function getPhotoAttribute(): string
     {
+        $value = $this->photo_url;
         if ($value && (str_starts_with($value, 'http://') || str_starts_with($value, 'https://'))) {
             return $value;
         }

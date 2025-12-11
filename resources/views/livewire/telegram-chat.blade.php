@@ -19,14 +19,15 @@
         }
 
         .tg-container {
-            height: calc(100vh - 120px);
+            height: calc(100vh - 65px);
             min-height: 600px;
             display: flex;
             background-color: var(--tg-bg-chat);
             border-radius: 0;
             overflow: hidden;
-            box-shadow: 0 1px 1px 0 rgba(0,0,0,.06), 0 2px 5px 0 rgba(0,0,0,.2);
+            box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .06), 0 2px 5px 0 rgba(0, 0, 0, .2);
             width: 100%;
+            max-width: 100vw;
         }
 
         /* Sidebar */
@@ -84,7 +85,7 @@
         }
 
         .tg-sidebar-header .tg-header-actions button:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         /* Search Box */
@@ -134,7 +135,7 @@
         }
 
         .tg-chat-list::-webkit-scrollbar-thumb {
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 3px;
         }
 
@@ -283,7 +284,7 @@
 
         .tg-chat-header .tg-header-status {
             font-size: 13px;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .tg-chat-header .tg-header-actions {
@@ -306,7 +307,7 @@
         }
 
         .tg-chat-header .tg-header-actions button:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         /* Messages Area */
@@ -324,7 +325,7 @@
         }
 
         .tg-messages::-webkit-scrollbar-thumb {
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 3px;
         }
 
@@ -346,7 +347,7 @@
             padding: 7px 12px 8px;
             border-radius: 12px;
             position: relative;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
         }
 
         .tg-message.out .tg-bubble {
@@ -379,7 +380,7 @@
 
         .tg-message .tg-time {
             font-size: 12px;
-            color: rgba(0,0,0,0.35);
+            color: rgba(0, 0, 0, 0.35);
         }
 
         .tg-message.out .tg-check {
@@ -395,7 +396,7 @@
         }
 
         .tg-date-separator span {
-            background: rgba(0,0,0,0.12);
+            background: rgba(0, 0, 0, 0.12);
             color: #ffffff;
             padding: 4px 12px;
             border-radius: 12px;
@@ -534,172 +535,172 @@
         }
     </style>
 
-    {{-- Sidebar --}}
-    <div class="tg-sidebar">
-        <div class="tg-sidebar-header">
-            <span class="tg-header-title">
-                <i class="fab fa-telegram me-2"></i>
-                Telegram
-            </span>
-            <div class="tg-header-actions">
-                <button wire:click="refreshAll" title="Refresh">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="tg-search-box">
-            <div class="tg-search-input-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" wire:model.live.debounce.300ms="searchQuery" placeholder="Cari...">
-            </div>
-        </div>
-
-        <div class="tg-chat-list">
-            @if (count($chats) > 0)
-                @foreach ($chats as $chat)
-                    <div class="tg-chat-item {{ $selectedChatId == $chat['id'] ? 'active' : '' }}"
-                        wire:click="selectChat({{ $chat['id'] }})">
-                        <img class="tg-avatar" src="{{ $chat['photo'] }}" alt="{{ $chat['name'] }}">
-                        <div class="tg-chat-info">
-                            <div class="tg-chat-top">
-                                <span class="tg-chat-name">{{ $chat['name'] }}</span>
-                                <span class="tg-chat-time">{{ $chat['last_message_time'] }}</span>
-                            </div>
-                            <div class="tg-chat-bottom">
-                                <span class="tg-chat-preview">{{ $chat['last_message'] }}</span>
-                                @if ($chat['unread_count'] > 0)
-                                    <span class="tg-unread-badge">{{ $chat['unread_count'] }}</span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            @else
-                <div class="text-center py-10">
-                    <i class="fab fa-telegram fs-3x text-muted mb-3"></i>
-                    <p class="text-muted">Belum ada percakapan</p>
-                </div>
-            @endif
-        </div>
-    </div>
-
-    {{-- Main Chat Area --}}
-    <div class="tg-main">
-        @if ($selectedChat)
-            <div class="tg-chat-header">
-                <div class="tg-chat-header-info">
-                    <img class="tg-avatar" src="{{ $selectedChat->photo }}"
-                        alt="{{ $selectedChat->getDisplayName() }}">
-                    <div>
-                        <div class="tg-header-name">{{ $selectedChat->getDisplayName() }}</div>
-                        <div class="tg-header-status">
-                            @if ($selectedChat->username)
-                                @{{ $selectedChat->username }}
-                            @else
-                                {{ ucfirst($selectedChat->chat_type) }}
-                            @endif
-                        </div>
-                    </div>
-                </div>
+    <div class="d-flex h-100" style="width: 100%;">
+        {{-- Sidebar --}}
+        <div class="tg-sidebar">
+            <div class="tg-sidebar-header">
+                <span class="tg-header-title">
+                    <i class="fab fa-telegram me-2"></i>
+                    Telegram
+                </span>
                 <div class="tg-header-actions">
-                    <button wire:click="loadMessages" title="Refresh Messages">
+                    <button wire:click="refreshAll" title="Refresh">
                         <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="tg-messages" id="tg-messages-container">
-                @if ($isLoading)
-                    <div class="tg-loading">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                @else
-                    @php $lastDate = null; @endphp
-                    @foreach ($messages as $message)
-                        @if ($lastDate !== $message['date'])
-                            <div class="tg-date-separator">
-                                <span>{{ $message['date'] }}</span>
-                            </div>
-                            @php $lastDate = $message['date']; @endphp
-                        @endif
+            <div class="tg-search-box">
+                <div class="tg-search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" wire:model.live.debounce.300ms="searchQuery" placeholder="Cari...">
+                </div>
+            </div>
 
-                        <div class="tg-message {{ $message['direction'] === 'outgoing' ? 'out' : 'in' }}">
-                            <div class="tg-bubble">
-                                @if ($message['type'] !== 'text')
-                                    <div class="tg-media-icon">
-                                        @switch($message['type'])
-                                            @case('photo')
-                                                📷
-                                            @break
-
-                                            @case('video')
-                                                🎬
-                                            @break
-
-                                            @case('audio')
-                                                🎵
-                                            @break
-
-                                            @case('voice')
-                                                🎤
-                                            @break
-
-                                            @case('document')
-                                                📄
-                                            @break
-
-                                            @case('sticker')
-                                                🏷️
-                                            @break
-
-                                            @case('location')
-                                                📍
-                                            @break
-
-                                            @case('contact')
-                                                👤
-                                            @break
-
-                                            @default
-                                                📎
-                                        @endswitch
-                                    </div>
-                                @endif
-                                <span class="tg-text">{{ $message['text'] ?? $message['caption'] ?? '' }}</span>
-                                <span class="tg-meta">
-                                    <span class="tg-time">{{ $message['time'] }}</span>
-                                    @if ($message['direction'] === 'outgoing')
-                                        <i class="fas fa-check-double tg-check"></i>
+            <div class="tg-chat-list">
+                @if (count($chats) > 0)
+                    @foreach ($chats as $chat)
+                        <div class="tg-chat-item {{ $selectedChatId == $chat['id'] ? 'active' : '' }}"
+                            wire:click="selectChat({{ $chat['id'] }})">
+                            <img class="tg-avatar" src="{{ $chat['photo'] }}" alt="{{ $chat['name'] }}">
+                            <div class="tg-chat-info">
+                                <div class="tg-chat-top">
+                                    <span class="tg-chat-name">{{ $chat['name'] }}</span>
+                                    <span class="tg-chat-time">{{ $chat['last_message_time'] }}</span>
+                                </div>
+                                <div class="tg-chat-bottom">
+                                    <span class="tg-chat-preview">{{ $chat['last_message'] }}</span>
+                                    @if ($chat['unread_count'] > 0)
+                                        <span class="tg-unread-badge">{{ $chat['unread_count'] }}</span>
                                     @endif
-                                </span>
+                                </div>
                             </div>
                         </div>
                     @endforeach
+                @else
+                    <div class="text-center py-10">
+                        <i class="fab fa-telegram fs-3x text-muted mb-3"></i>
+                        <p class="text-muted">Belum ada percakapan</p>
+                    </div>
                 @endif
             </div>
+        </div>
 
-            <div class="tg-input-area">
-                <div class="tg-input-wrapper">
-                    <textarea wire:model="messageText" wire:keydown.enter.prevent="sendMessage" placeholder="Tulis pesan..."
-                        rows="1"></textarea>
+        {{-- Main Chat Area --}}
+        <div class="tg-main">
+            @if ($selectedChatData)
+                <div class="tg-chat-header">
+                    <div class="tg-chat-header-info">
+                        <img class="tg-avatar" src="{{ $selectedChatData['photo'] }}"
+                            alt="{{ $selectedChatData['name'] }}">
+                        <div>
+                            <div class="tg-header-name">{{ $selectedChatData['name'] }}</div>
+                            <div class="tg-header-status">
+                                @if ($selectedChatData['username'])
+                                    {{ '@' . $selectedChatData['username'] }}
+                                @else
+                                    {{ ucfirst($selectedChatData['chat_type']) }}
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tg-header-actions">
+                        <button wire:click="loadMessages" title="Refresh Messages">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
                 </div>
-                <button class="tg-send-btn" wire:click="sendMessage" wire:loading.attr="disabled"
-                    {{ $isSending ? 'disabled' : '' }}>
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
-        @else
-            <div class="tg-empty-state">
-                <i class="fab fa-telegram"></i>
-                <h3>Telegram Chat</h3>
-                <p>Pilih percakapan untuk mulai membalas pesan</p>
-            </div>
-        @endif
+
+                <div class="tg-messages" id="tg-messages-container">
+                    @if ($isLoading)
+                        <div class="tg-loading">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    @else
+                        @php $lastDate = null; @endphp
+                        @foreach ($messages as $message)
+                            @if ($lastDate !== $message['date'])
+                                <div class="tg-date-separator">
+                                    <span>{{ $message['date'] }}</span>
+                                </div>
+                                @php $lastDate = $message['date']; @endphp
+                            @endif
+
+                            <div class="tg-message {{ $message['direction'] === 'outgoing' ? 'out' : 'in' }}">
+                                <div class="tg-bubble">
+                                    @if ($message['type'] !== 'text')
+                                        <div class="tg-media-icon">
+                                            @switch($message['type'])
+                                                @case('photo')
+                                                    📷
+                                                @break
+
+                                                @case('video')
+                                                    🎬
+                                                @break
+
+                                                @case('audio')
+                                                    🎵
+                                                @break
+
+                                                @case('voice')
+                                                    🎤
+                                                @break
+
+                                                @case('document')
+                                                    📄
+                                                @break
+
+                                                @case('sticker')
+                                                    🏷️
+                                                @break
+
+                                                @case('location')
+                                                    📍
+                                                @break
+
+                                                @case('contact')
+                                                    👤
+                                                @break
+
+                                                @default
+                                                    📎
+                                            @endswitch
+                                        </div>
+                                    @endif
+                                    <span class="tg-text">{{ $message['text'] ?? ($message['caption'] ?? '') }}</span>
+                                    <span class="tg-meta">
+                                        <span class="tg-time">{{ $message['time'] }}</span>
+                                        @if ($message['direction'] === 'outgoing')
+                                            <i class="fas fa-check-double tg-check"></i>
+                                        @endif
+                                    </span>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+
+                <div class="tg-input-area">
+                    <div class="tg-input-wrapper">
+                        <textarea wire:model="messageText" wire:keydown.enter.prevent="sendMessage" placeholder="Tulis pesan..." rows="1"></textarea>
+                    </div>
+                    <button class="tg-send-btn" wire:click="sendMessage" wire:loading.attr="disabled"
+                        {{ $isSending ? 'disabled' : '' }}>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            @else
+                <div class="tg-empty-state">
+                    <i class="fab fa-telegram"></i>
+                    <h3>Telegram Chat</h3>
+                    <p>Pilih percakapan untuk mulai membalas pesan</p>
+                </div>
+            @endif
+        </div>
     </div>
-</div>
 
 <script>
     document.addEventListener('livewire:initialized', () => {

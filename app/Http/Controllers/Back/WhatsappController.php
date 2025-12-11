@@ -54,7 +54,7 @@ class WhatsappController extends Controller
                 ],
                 [
                     'name' => 'Chat',
-                    'link' => route('back.whatsapp.chat', $team->name_id)
+                    'link' => route('back.team.whatsapp.chat', $team->name_id)
                 ],
             ],
             'nameId' => $nameId,
