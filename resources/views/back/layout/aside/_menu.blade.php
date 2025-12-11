@@ -41,73 +41,100 @@
                 </a>
             </div>
 
-               <div data-kt-menu-trigger="click" class="menu-item here show menu-accordion">
-            <span class="menu-link">
-                <span class="menu-icon">
-                    <i class="ki-duotone ki-element-11 fs-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                        <span class="path4"></span>
-                    </i></span>
-                <span class="menu-title">WhatsApp</span>
-                <span class="menu-arrow"></span>
-            </span>
-            <div class="menu-sub menu-sub-accordion">
-                <div class="menu-item">
-                    <a class="menu-link @if (request()->routeIs('back.team.whatsapp.index' , $current_team)) active @endif"
-                        href="{{ route('back.team.whatsapp.index' , $current_team) }}">
-                        <span class="menu-bullet">
-                            <span class="bullet bullet-dot"></span>
-                        </span>
-                        <span class="menu-title">Device Link</span>
-                    </a>
-                    <a class="menu-link @if (request()->routeIs('back.team.whatsapp.chat' , $current_team)) active @endif"
-                        href="{{ route('back.team.whatsapp.chat' , $current_team) }}">
-                        <span class="menu-bullet">
-                            <span class="bullet bullet-dot"></span>
-                        </span>
-                        <span class="menu-title">Chat</span>
-                    </a>
-                    <a class="menu-link @if (request()->routeIs('back.team.whatsapp.documentation.index' , $current_team)) active @endif"
-                        href="{{ route('back.team.whatsapp.documentation.index' , $current_team) }}">
-                        <span class="menu-bullet">
-                            <span class="bullet bullet-dot"></span>
-                        </span>
-                        <span class="menu-title">Dokumentasi API</span>
-                    </a>
-                </div>
-
-            </div>
-        </div>
-
-        <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if (request()->routeIs('back.team.telegram.*')) here show @endif">
-            <span class="menu-link">
-                <span class="menu-icon">
-                    <i class="fab fa-telegram fs-2 "></i>
+            <div data-kt-menu-trigger="click" class="menu-item  @if (request()->routeIs('back.team.whatsapp.*')) here show @endif menu-accordion">
+                <span class="menu-link">
+                    <span class="menu-icon">
+                        <i class="fa-brands fa-whatsapp fs-2"></i>
+                    </span>
+                    <span class="menu-title">WhatsApp</span>
+                    <span class="menu-arrow"></span>
                 </span>
-                <span class="menu-title">Telegram</span>
-                <span class="menu-arrow"></span>
-            </span>
-            <div class="menu-sub menu-sub-accordion">
-                <div class="menu-item">
-                    <a class="menu-link @if (request()->routeIs('back.team.telegram.index', $current_team)) active @endif"
-                        href="{{ route('back.team.telegram.index', $current_team) }}">
-                        <span class="menu-bullet">
-                            <span class="bullet bullet-dot"></span>
-                        </span>
-                        <span class="menu-title">Bot Setting</span>
-                    </a>
-                    <a class="menu-link @if (request()->routeIs('back.team.telegram.chat', $current_team)) active @endif"
-                        href="{{ route('back.team.telegram.chat', $current_team) }}">
-                        <span class="menu-bullet">
-                            <span class="bullet bullet-dot"></span>
-                        </span>
-                        <span class="menu-title">Chat</span>
-                    </a>
+                <div class="menu-sub menu-sub-accordion">
+                    <div class="menu-item">
+                        <a class="menu-link @if (request()->routeIs('back.team.whatsapp.index', $current_team)) active @endif"
+                            href="{{ route('back.team.whatsapp.index', $current_team) }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Device Link</span>
+                        </a>
+                        <a class="menu-link @if (request()->routeIs('back.team.whatsapp.chat', $current_team)) active @endif"
+                            href="{{ route('back.team.whatsapp.chat', $current_team) }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Chat</span>
+                        </a>
+                        <a class="menu-link @if (request()->routeIs('back.team.whatsapp.documentation.index', $current_team)) active @endif"
+                            href="{{ route('back.team.whatsapp.documentation.index', $current_team) }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Dokumentasi API</span>
+                        </a>
+                    </div>
+
                 </div>
             </div>
-        </div>
+
+            <div data-kt-menu-trigger="click"
+                class="menu-item menu-accordion @if (request()->routeIs('back.team.telegram.*')) here show @endif">
+                <span class="menu-link">
+                    <span class="menu-icon">
+                        <i class="fa-brands fa-telegram fs-2"></i>
+                    </span>
+                    <span class="menu-title">Telegram</span>
+                    <span class="menu-arrow"></span>
+                </span>
+                <div class="menu-sub menu-sub-accordion">
+                    <div class="menu-item">
+                        <a class="menu-link @if (request()->routeIs('back.team.telegram.index', $current_team)) active @endif"
+                            href="{{ route('back.team.telegram.index', $current_team) }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Bot Setting</span>
+                        </a>
+                        <a class="menu-link @if (request()->routeIs('back.team.telegram.chat', $current_team)) active @endif"
+                            href="{{ route('back.team.telegram.chat', $current_team) }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Chat</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div data-kt-menu-trigger="click"
+                class="menu-item menu-accordion ">
+                <span class="menu-link">
+                    <span class="menu-icon">
+                        <i class="fa-brands fa-telegram fs-2"></i>
+                    </span>
+                    <span class="menu-title">Website Chat</span>
+                    <span class="menu-arrow"></span>
+                </span>
+                <div class="menu-sub menu-sub-accordion">
+                    <div class="menu-item">
+                        <a class="menu-link "
+                            href="#">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Website Integration</span>
+                        </a>
+                        <a class="menu-link "
+                            href="#">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Chat</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         @endif
 
         <div class="menu-item pt-5">
