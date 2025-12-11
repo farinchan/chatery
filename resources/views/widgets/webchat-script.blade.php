@@ -314,25 +314,30 @@
                     right: 0 !important;
                     bottom: 0 !important;
                     background: white !important;
-                    display: flex !important;
+                    display: none !important;
                     flex-direction: column !important;
                     z-index: 10 !important;
+                }
+
+                .webchat-form-overlay.show {
+                    display: flex !important;
                 }
 
                 .webchat-form-body {
                     all: revert !important;
                     flex: 1 !important;
-                    padding: 20px !important;
+                    padding: 24px 20px !important;
                     display: flex !important;
                     flex-direction: column !important;
                     justify-content: center !important;
+                    overflow-y: auto !important;
                 }
 
                 .webchat-form-title {
                     all: revert !important;
                     font-size: 20px !important;
                     font-weight: 600 !important;
-                    margin-bottom: 8px !important;
+                    margin: 0 0 8px 0 !important;
                     color: #333 !important;
                 }
 
@@ -340,12 +345,14 @@
                     all: revert !important;
                     font-size: 14px !important;
                     color: #666 !important;
-                    margin-bottom: 20px !important;
+                    margin: 0 0 24px 0 !important;
                 }
 
                 .webchat-form-group {
                     all: revert !important;
                     margin-bottom: 16px !important;
+                    display: block !important;
+                    width: 100% !important;
                 }
 
                 .webchat-form-group label {
@@ -359,30 +366,63 @@
 
                 .webchat-form-group input {
                     all: revert !important;
+                    display: block !important;
                     width: 100% !important;
-                    padding: 12px !important;
+                    max-width: 100% !important;
+                    padding: 12px 14px !important;
                     border: 1px solid #e0e0e0 !important;
                     border-radius: 8px !important;
                     font-size: 14px !important;
+                    font-family: inherit !important;
                     outline: none !important;
+                    background-color: #fff !important;
+                    color: #333 !important;
+                    box-sizing: border-box !important;
+                    -webkit-appearance: none !important;
+                    -moz-appearance: none !important;
+                    appearance: none !important;
+                    transition: border-color 0.2s ease !important;
+                }
+
+                .webchat-form-group input::placeholder {
+                    color: #999 !important;
+                    opacity: 1 !important;
                 }
 
                 .webchat-form-group input:focus {
                     border-color: ${this.config.primaryColor} !important;
+                    box-shadow: 0 0 0 3px rgba(15, 74, 162, 0.1) !important;
                 }
 
                 .webchat-form-submit {
                     all: revert !important;
                     width: 100% !important;
-                    padding: 14px !important;
+                    padding: 14px 20px !important;
                     background: linear-gradient(135deg, ${this.config.primaryColor}, ${this.config.secondaryColor}) !important;
                     color: white !important;
                     border: none !important;
                     border-radius: 8px !important;
-                    font-size: 16px !important;
-                    font-weight: 500 !important;
+                    font-size: 15px !important;
+                    font-weight: 600 !important;
                     cursor: pointer !important;
-                    margin-top: 8px !important;
+                    margin-top: 16px !important;
+                    transition: all 0.3s ease !important;
+                    box-shadow: 0 4px 12px rgba(15, 74, 162, 0.3) !important;
+                }
+
+                .webchat-form-submit:hover {
+                    transform: translateY(-2px) !important;
+                    box-shadow: 0 6px 16px rgba(15, 74, 162, 0.4) !important;
+                }
+
+                .webchat-form-submit:active {
+                    transform: translateY(0) !important;
+                }
+
+                .webchat-form-submit:disabled {
+                    opacity: 0.7 !important;
+                    cursor: not-allowed !important;
+                    transform: none !important;
                 }
 
                 @media (max-width: 480px) {
@@ -504,7 +544,22 @@
 
             if (this.formOverlay) {
                 const formSubmit = this.formOverlay.querySelector('#webchatFormSubmit');
-                formSubmit.addEventListener('click', () => this.submitForm());
+                formSubmit.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.submitForm();
+                });
+
+                // Allow Enter key to submit form
+                const formInputs = this.formOverlay.querySelectorAll('input');
+                formInputs.forEach(input => {
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            this.submitForm();
+                        }
+                    });
+                });
             }
         }
 
@@ -523,7 +578,7 @@
 
             // Check if we need to show form or init session
             if (this.formOverlay && !this.visitorId) {
-                this.formOverlay.style.display = 'flex';
+                this.formOverlay.classList.add('show');
             } else if (!this.visitorId) {
                 await this.initSession();
             }
@@ -538,30 +593,62 @@
         }
 
         async submitForm() {
+            console.log('WebChat: submitForm called');
+
             const nameInput = this.formOverlay.querySelector('#webchatFormName');
             const emailInput = this.formOverlay.querySelector('#webchatFormEmail');
+            const submitBtn = this.formOverlay.querySelector('#webchatFormSubmit');
 
             const name = nameInput ? nameInput.value.trim() : null;
             const email = emailInput ? emailInput.value.trim() : null;
 
+            console.log('WebChat: Form data', { name, email, requireName: this.config.requireName, requireEmail: this.config.requireEmail });
+
             if (this.config.requireName && !name) {
                 alert('Nama harus diisi');
+                if (nameInput) nameInput.focus();
                 return;
             }
 
             if (this.config.requireEmail && !email) {
                 alert('Email harus diisi');
+                if (emailInput) emailInput.focus();
                 return;
             }
 
-            await this.initSession(name, email);
-            this.formOverlay.style.display = 'none';
+            // Show loading state
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Memulai...';
+            submitBtn.disabled = true;
+
+            try {
+                console.log('WebChat: Calling initSession...');
+                const success = await this.initSession(name, email);
+                console.log('WebChat: initSession result:', success);
+
+                if (success) {
+                    this.formOverlay.classList.remove('show');
+                    this.input.focus();
+                    console.log('WebChat: Form overlay hidden, chat opened');
+                } else {
+                    alert('Gagal memulai chat. Silakan coba lagi.');
+                }
+            } catch (error) {
+                console.error('Submit form error:', error);
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         }
 
         async initSession(name = null, email = null) {
             try {
+                console.log('WebChat: Initializing session...', { widgetId: this.config.widgetId, sessionId: this.sessionId, name, email });
+
                 const response = await fetch(`${this.config.apiBaseUrl}/init`, {
                     method: 'POST',
+                    mode: 'cors',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
@@ -575,12 +662,27 @@
                     }),
                 });
 
+                console.log('WebChat: Init response status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('WebChat init failed:', response.status, response.statusText, errorText);
+                    return false;
+                }
+
                 const data = await response.json();
+                console.log('WebChat: Init response data:', data);
 
                 if (data.success) {
                     this.visitorId = data.data.visitor_id;
                     this.visitorName = data.data.visitor_name;
                     this.sessionId = data.data.session_id;
+
+                    console.log('WebChat: Session initialized successfully', { visitorId: this.visitorId, visitorName: this.visitorName });
+
+                    // Save session to localStorage
+                    localStorage.setItem('webchat_session_' + this.config.widgetId, this.sessionId);
+                    localStorage.setItem('webchat_visitor_' + this.config.widgetId, this.visitorId);
 
                     // Load existing messages
                     if (data.data.messages && data.data.messages.length > 0) {
@@ -602,9 +704,15 @@
 
                     // Start polling for new messages
                     this.startPolling();
+
+                    return true;
+                } else {
+                    console.error('WebChat init failed:', data.message);
+                    return false;
                 }
             } catch (error) {
                 console.error('WebChat init error:', error);
+                return false;
             }
         }
 

@@ -15,7 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'whatsapp.session' => \App\Http\Middleware\WhatsappSession::class,
             'track.online' => \App\Http\Middleware\TrackOnlineStatus::class,
+            'cors' => \App\Http\Middleware\CorsMiddleware::class,
         ]);
+
+        // Add CORS middleware to API routes
+        $middleware->prependToGroup('api', \App\Http\Middleware\CorsMiddleware::class);
 
         // Add track online status to web middleware group
         $middleware->appendToGroup('web', \App\Http\Middleware\TrackOnlineStatus::class);

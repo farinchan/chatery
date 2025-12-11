@@ -19,6 +19,11 @@ Route::prefix('webchat')->name('api.webchat.')->group(function () {
     Route::get('/messages', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'getMessages'])->name('messages');
     Route::post('/visitor-info', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'updateVisitorInfo'])->name('visitor-info');
     Route::post('/disconnect', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'disconnect'])->name('disconnect');
+
+    // Handle OPTIONS preflight requests
+    Route::options('/{any}', function () {
+        return response('', 200);
+    })->where('any', '.*');
 });
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
