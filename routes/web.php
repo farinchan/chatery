@@ -12,6 +12,8 @@ use App\Http\Controllers\Back\WhatsappController as BackWhatsappController;
 use App\Http\Controllers\Back\TelegramController as BackTelegramController;
 use App\Http\Controllers\Back\WebsiteChatController as BackWebsiteChatController;
 use App\Http\Controllers\Back\DocumentationController as BackDocumentationController;
+use App\Http\Controllers\Back\MessageController as BackMessageController;
+use App\Http\Controllers\Back\SettingController as BackSettingController;
 
 
 
@@ -89,6 +91,18 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
         Route::get('/news-stat', [BackDashboardController::class, 'stat'])->name('news.stat');
         Route::post('/add-whatsapp-session', [BackDashboardController::class, 'addWhatsappSession'])->name('add-whatsapp-session');
         Route::post('/add-team', [BackDashboardController::class, 'addTeam'])->name('add-team');
+    });
+
+     Route::prefix('message')->name('message.')->group(function () {
+        Route::get('/', [BackMessageController::class, 'index'])->name('index');
+        Route::delete('/{id}', [BackMessageController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('setting')->name('setting.')->group(function () {
+        Route::get('/website', [BackSettingController::class, 'website'])->name('website');
+        Route::put('/website', [BackSettingController::class, 'websiteUpdate'])->name('website.update');
+        Route::put('/website/info', [BackSettingController::class, 'informationUpdate'])->name('website.info');
+
     });
 
 });

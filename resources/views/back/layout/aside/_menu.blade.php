@@ -262,7 +262,7 @@
 
 
         @role('super-admin')
-            {{-- <div class="menu-item pt-5">
+            <div class="menu-item pt-5">
                 <div class="menu-content"><span class="menu-heading fw-bold text-uppercase fs-7">Administrator</span>
                 </div>
             </div>
@@ -295,8 +295,8 @@
                 <div class="menu-sub menu-sub-accordion">
 
                     <div class="menu-item">
-                        <a class="menu-link @if (request()->routeIs('back.master.user.*')) active @endif"
-                            href="{{ route('back.master.user.index') }}">
+                        <a class="menu-link"
+                            href="#">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -328,17 +328,8 @@
                             <span class="menu-title">Website</span>
                         </a>
                     </div>
-                    <div class="menu-item">
-                        <a class="menu-link @if (request()->routeIs('back.setting.banner')) active @endif"
-                            href="{{ route('back.setting.banner') }}">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">Banner</span>
-                        </a>
-                    </div>
                 </div>
-            </div> --}}
+            </div>
         @endrole
 
     </div>
