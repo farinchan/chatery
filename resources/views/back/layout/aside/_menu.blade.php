@@ -80,6 +80,34 @@
 
             </div>
         </div>
+
+        <div data-kt-menu-trigger="click" class="menu-item menu-accordion @if (request()->routeIs('back.team.telegram.*')) here show @endif">
+            <span class="menu-link">
+                <span class="menu-icon">
+                    <i class="fab fa-telegram fs-2 "></i>
+                </span>
+                <span class="menu-title">Telegram</span>
+                <span class="menu-arrow"></span>
+            </span>
+            <div class="menu-sub menu-sub-accordion">
+                <div class="menu-item">
+                    <a class="menu-link @if (request()->routeIs('back.team.telegram.index', $current_team)) active @endif"
+                        href="{{ route('back.team.telegram.index', $current_team) }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">Bot Setting</span>
+                    </a>
+                    <a class="menu-link @if (request()->routeIs('back.team.telegram.chat', $current_team)) active @endif"
+                        href="{{ route('back.team.telegram.chat', $current_team) }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">Chat</span>
+                    </a>
+                </div>
+            </div>
+        </div>
         @endif
 
         <div class="menu-item pt-5">

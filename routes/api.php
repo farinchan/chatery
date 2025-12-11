@@ -7,6 +7,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// Telegram Webhook (public, no auth required)
+Route::post('/telegram/webhook/{botId}', [App\Http\Controllers\Api\TelegramWebhookController::class, 'handle'])
+    ->name('api.telegram.webhook');
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
 

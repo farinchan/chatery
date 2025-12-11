@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\RegisterController as AuthRegisterController;
 
 use App\Http\Controllers\Back\DashboardController as BackDashboardController;
 use App\Http\Controllers\Back\WhatsappController as BackWhatsappController;
+use App\Http\Controllers\Back\TelegramController as BackTelegramController;
 use App\Http\Controllers\Back\DocumentationController as BackDocumentationController;
 
 
@@ -55,6 +56,17 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
                 Route::get('/send-bulk-message', [App\Http\Controllers\Back\DocumentationController::class, 'sendBulkMessage'])->name('sendBulkMessage');
             });
         });
+
+        Route::prefix('telegram')->name('telegram.')->group(function () {
+            Route::get('/', [BackTelegramController::class, 'index'])->name('index');
+            Route::get('/chat', [BackTelegramController::class, 'chat'])->name('chat');
+            Route::post('/store', [BackTelegramController::class, 'store'])->name('store');
+            Route::put('/update', [BackTelegramController::class, 'update'])->name('update');
+            Route::delete('/destroy', [BackTelegramController::class, 'destroy'])->name('destroy');
+            Route::post('/refresh-webhook', [BackTelegramController::class, 'refreshWebhook'])->name('refresh');
+            Route::get('/status', [BackTelegramController::class, 'getStatus'])->name('status');
+        });
+
         Route::prefix('customer-service')->name('customer-service.')->group(function () {
 
         });
