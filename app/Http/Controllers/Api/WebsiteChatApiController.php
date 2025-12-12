@@ -286,4 +286,435 @@ class WebsiteChatApiController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    // ============================================
+    // AGENT/TEAM API ENDPOINTS (Authenticated)
+    // ============================================
+
+    /**
+     * Get team by auth token
+     */
+    private function getTeamByToken(Request $request)
+    {
+        $token = $request->header('X-Auth-Token');
+        if (!$token) {
+            return null;
+        }
+
+        return \App\Models\Team::whereHas('teamUsers', function ($query) use ($token) {
+            $query->where('token', $token);
+        })->first();
+    }
+
+    /**
+     * Get all visitors/conversations for the team
+     */
+    public function getVisitors(Request $request)
+    {
+        $token = $request->header('X-Auth-Token');
+        if (!$token) {
+            return response()->json(['status' => 'error', 'message' => 'X-Auth-Token header is required', 'data' => null], 400);
+        }
+
+        try {
+            $team = $this->getTeamByToken($request);
+
+            if (!$team) {
+                return response()->json(['status' => 'error', 'message' => 'Team not found or invalid token', 'data' => null], 404);
+            }
+
+            // Get widget for this team
+            $widget = WebsiteChatWidget::where('team_id', $team->id)->first();
+
+            if (!$widget) {
+                return response()->json(['status' => 'error', 'message' => 'No webchat widget found for this team', 'data' => null], 404);
+            }
+
+            $query = WebsiteChatVisitor::where('website_chat_widget_id', $widget->id);
+
+            // Filter by status
+            if ($request->has('status')) {
+                $query->where('status', $request->status);
+            }
+
+            // Filter by online status
+            if ($request->has('is_online')) {
+                $query->where('is_online', $request->boolean('is_online'));
+            }
+
+            // Filter by unread
+            if ($request->boolean('unread_only')) {
+                $query->where('unread_count', '>', 0);
+            }
+
+            // Order by last activity
+            $query->orderBy('last_activity_at', 'desc');
+
+            // Pagination
+            $perPage = $request->input('per_page', 20);
+            $visitors = $query->paginate($perPage);
+
+            $data = $visitors->map(function ($visitor) {
+                $lastMessage = $visitor->messages()->orderBy('sent_at', 'desc')->first();
+                return [
+                    'id' => $visitor->id,
+                    'session_id' => $visitor->session_id,
+                    'name' => $visitor->name,
+                    'email' => $visitor->email,
+                    'phone' => $visitor->phone,
+                    'display_name' => $visitor->getDisplayName(),
+                    'is_online' => $visitor->is_online,
+                    'status' => $visitor->status,
+                    'unread_count' => $visitor->unread_count,
+                    'ip_address' => $visitor->ip_address,
+                    'country' => $visitor->country,
+                    'city' => $visitor->city,
+                    'browser' => $visitor->browser,
+                    'device' => $visitor->device,
+                    'current_page' => $visitor->current_page,
+                    'referrer' => $visitor->referrer,
+                    'last_message' => $lastMessage ? [
+                        'message' => Str::limit($lastMessage->message, 50),
+                        'direction' => $lastMessage->direction,
+                        'sent_at' => $lastMessage->sent_at->toIso8601String(),
+                    ] : null,
+                    'first_visit_at' => $visitor->first_visit_at?->toIso8601String(),
+                    'last_activity_at' => $visitor->last_activity_at?->toIso8601String(),
+                ];
+            });
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Visitors fetched successfully',
+                'data' => [
+                    'visitors' => $data,
+                    'pagination' => [
+                        'current_page' => $visitors->currentPage(),
+                        'last_page' => $visitors->lastPage(),
+                        'per_page' => $visitors->perPage(),
+                        'total' => $visitors->total(),
+                    ],
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage(), 'data' => null], 500);
+        }
+    }
+
+    /**
+     * Get specific visitor info
+     */
+    public function getVisitor(Request $request, $visitorId)
+    {
+        $token = $request->header('X-Auth-Token');
+        if (!$token) {
+            return response()->json(['status' => 'error', 'message' => 'X-Auth-Token header is required', 'data' => null], 400);
+        }
+
+        try {
+            $team = $this->getTeamByToken($request);
+
+            if (!$team) {
+                return response()->json(['status' => 'error', 'message' => 'Team not found or invalid token', 'data' => null], 404);
+            }
+
+            $widget = WebsiteChatWidget::where('team_id', $team->id)->first();
+
+            if (!$widget) {
+                return response()->json(['status' => 'error', 'message' => 'No webchat widget found for this team', 'data' => null], 404);
+            }
+
+            $visitor = WebsiteChatVisitor::where('id', $visitorId)
+                ->where('website_chat_widget_id', $widget->id)
+                ->first();
+
+            if (!$visitor) {
+                return response()->json(['status' => 'error', 'message' => 'Visitor not found', 'data' => null], 404);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Visitor fetched successfully',
+                'data' => [
+                    'id' => $visitor->id,
+                    'session_id' => $visitor->session_id,
+                    'name' => $visitor->name,
+                    'email' => $visitor->email,
+                    'phone' => $visitor->phone,
+                    'display_name' => $visitor->getDisplayName(),
+                    'is_online' => $visitor->is_online,
+                    'status' => $visitor->status,
+                    'unread_count' => $visitor->unread_count,
+                    'ip_address' => $visitor->ip_address,
+                    'country' => $visitor->country,
+                    'city' => $visitor->city,
+                    'browser' => $visitor->browser,
+                    'device' => $visitor->device,
+                    'os' => $visitor->os,
+                    'current_page' => $visitor->current_page,
+                    'referrer' => $visitor->referrer,
+                    'notes' => $visitor->notes,
+                    'tags' => $visitor->tags,
+                    'first_visit_at' => $visitor->first_visit_at?->toIso8601String(),
+                    'last_activity_at' => $visitor->last_activity_at?->toIso8601String(),
+                    'created_at' => $visitor->created_at->toIso8601String(),
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage(), 'data' => null], 500);
+        }
+    }
+
+    /**
+     * Get visitor messages (conversation history)
+     */
+    public function getVisitorMessages(Request $request, $visitorId)
+    {
+        $token = $request->header('X-Auth-Token');
+        if (!$token) {
+            return response()->json(['status' => 'error', 'message' => 'X-Auth-Token header is required', 'data' => null], 400);
+        }
+
+        try {
+            $team = $this->getTeamByToken($request);
+
+            if (!$team) {
+                return response()->json(['status' => 'error', 'message' => 'Team not found or invalid token', 'data' => null], 404);
+            }
+
+            $widget = WebsiteChatWidget::where('team_id', $team->id)->first();
+
+            if (!$widget) {
+                return response()->json(['status' => 'error', 'message' => 'No webchat widget found for this team', 'data' => null], 404);
+            }
+
+            $visitor = WebsiteChatVisitor::where('id', $visitorId)
+                ->where('website_chat_widget_id', $widget->id)
+                ->first();
+
+            if (!$visitor) {
+                return response()->json(['status' => 'error', 'message' => 'Visitor not found', 'data' => null], 404);
+            }
+
+            $query = $visitor->messages()->orderBy('sent_at', 'asc');
+
+            // Get messages after specific ID
+            if ($request->has('after_id')) {
+                $query->where('id', '>', $request->after_id);
+            }
+
+            // Limit messages
+            if ($request->has('limit')) {
+                $query->limit($request->limit);
+            }
+
+            $messages = $query->get()->map(function ($msg) {
+                return [
+                    'id' => $msg->id,
+                    'direction' => $msg->direction,
+                    'message_type' => $msg->message_type,
+                    'message' => $msg->message,
+                    'file_url' => $msg->getFileUrl(),
+                    'file_name' => $msg->file_name,
+                    'is_read' => $msg->is_read,
+                    'sent_at' => $msg->sent_at->toIso8601String(),
+                    'formatted_time' => $msg->getFormattedTime(),
+                ];
+            });
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Messages fetched successfully',
+                'data' => [
+                    'visitor' => [
+                        'id' => $visitor->id,
+                        'display_name' => $visitor->getDisplayName(),
+                        'is_online' => $visitor->is_online,
+                    ],
+                    'messages' => $messages,
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage(), 'data' => null], 500);
+        }
+    }
+
+    /**
+     * Send message to visitor (agent reply)
+     */
+    public function sendMessageToVisitor(Request $request, $visitorId)
+    {
+        $token = $request->header('X-Auth-Token');
+        if (!$token) {
+            return response()->json(['status' => 'error', 'message' => 'X-Auth-Token header is required', 'data' => null], 400);
+        }
+
+        try {
+            $team = $this->getTeamByToken($request);
+
+            if (!$team) {
+                return response()->json(['status' => 'error', 'message' => 'Team not found or invalid token', 'data' => null], 404);
+            }
+
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+                'message' => 'required|string|max:2000',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['status' => 'error', 'message' => 'Validation error', 'validation' => $validator->errors(), 'data' => null], 422);
+            }
+
+            $widget = WebsiteChatWidget::where('team_id', $team->id)->first();
+
+            if (!$widget) {
+                return response()->json(['status' => 'error', 'message' => 'No webchat widget found for this team', 'data' => null], 404);
+            }
+
+            $visitor = WebsiteChatVisitor::where('id', $visitorId)
+                ->where('website_chat_widget_id', $widget->id)
+                ->first();
+
+            if (!$visitor) {
+                return response()->json(['status' => 'error', 'message' => 'Visitor not found', 'data' => null], 404);
+            }
+
+            // Create outgoing message (agent to visitor)
+            $message = WebsiteChatMessage::create([
+                'website_chat_visitor_id' => $visitor->id,
+                'direction' => 'outgoing',
+                'message_type' => 'text',
+                'message' => $request->message,
+                'sent_at' => now(),
+                'is_read' => false,
+            ]);
+
+            // Update visitor status to active if needed
+            if ($visitor->status === 'pending') {
+                $visitor->update(['status' => 'active']);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Message sent successfully',
+                'data' => [
+                    'id' => $message->id,
+                    'direction' => $message->direction,
+                    'message_type' => $message->message_type,
+                    'message' => $message->message,
+                    'sent_at' => $message->sent_at->toIso8601String(),
+                    'formatted_time' => $message->getFormattedTime(),
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage(), 'data' => null], 500);
+        }
+    }
+
+    /**
+     * Mark conversation as read
+     */
+    public function markAsRead(Request $request, $visitorId)
+    {
+        $token = $request->header('X-Auth-Token');
+        if (!$token) {
+            return response()->json(['status' => 'error', 'message' => 'X-Auth-Token header is required', 'data' => null], 400);
+        }
+
+        try {
+            $team = $this->getTeamByToken($request);
+
+            if (!$team) {
+                return response()->json(['status' => 'error', 'message' => 'Team not found or invalid token', 'data' => null], 404);
+            }
+
+            $widget = WebsiteChatWidget::where('team_id', $team->id)->first();
+
+            if (!$widget) {
+                return response()->json(['status' => 'error', 'message' => 'No webchat widget found for this team', 'data' => null], 404);
+            }
+
+            $visitor = WebsiteChatVisitor::where('id', $visitorId)
+                ->where('website_chat_widget_id', $widget->id)
+                ->first();
+
+            if (!$visitor) {
+                return response()->json(['status' => 'error', 'message' => 'Visitor not found', 'data' => null], 404);
+            }
+
+            // Mark all incoming messages as read
+            $visitor->messages()
+                ->where('direction', 'incoming')
+                ->where('is_read', false)
+                ->update(['is_read' => true, 'read_at' => now()]);
+
+            // Reset unread count
+            $visitor->update(['unread_count' => 0]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Messages marked as read',
+                'data' => null
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage(), 'data' => null], 500);
+        }
+    }
+
+    /**
+     * Close/resolve conversation
+     */
+    public function closeConversation(Request $request, $visitorId)
+    {
+        $token = $request->header('X-Auth-Token');
+        if (!$token) {
+            return response()->json(['status' => 'error', 'message' => 'X-Auth-Token header is required', 'data' => null], 400);
+        }
+
+        try {
+            $team = $this->getTeamByToken($request);
+
+            if (!$team) {
+                return response()->json(['status' => 'error', 'message' => 'Team not found or invalid token', 'data' => null], 404);
+            }
+
+            $widget = WebsiteChatWidget::where('team_id', $team->id)->first();
+
+            if (!$widget) {
+                return response()->json(['status' => 'error', 'message' => 'No webchat widget found for this team', 'data' => null], 404);
+            }
+
+            $visitor = WebsiteChatVisitor::where('id', $visitorId)
+                ->where('website_chat_widget_id', $widget->id)
+                ->first();
+
+            if (!$visitor) {
+                return response()->json(['status' => 'error', 'message' => 'Visitor not found', 'data' => null], 404);
+            }
+
+            // Update visitor status to closed
+            $visitor->update([
+                'status' => 'closed',
+                'unread_count' => 0,
+            ]);
+
+            // Mark all messages as read
+            $visitor->messages()
+                ->where('is_read', false)
+                ->update(['is_read' => true, 'read_at' => now()]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Conversation closed successfully',
+                'data' => null
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage(), 'data' => null], 500);
+        }
+    }
 }

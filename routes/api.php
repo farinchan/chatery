@@ -65,5 +65,25 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         });
     });
 
-   
+    Route::prefix('webchat')->name('webchat.')->group(function () {
+        // Get all visitors/conversations
+        Route::get('/visitors', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'getVisitors'])->name('visitors');
+
+        // Get specific visitor info
+        Route::get('/visitors/{visitorId}', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'getVisitor'])->name('visitor');
+
+        // Get conversation messages
+        Route::get('/visitors/{visitorId}/messages', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'getVisitorMessages'])->name('visitor.messages');
+
+        // Send message to visitor (agent reply)
+        Route::post('/visitors/{visitorId}/send', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'sendMessageToVisitor'])->name('visitor.send');
+
+        // Mark conversation as read
+        Route::post('/visitors/{visitorId}/read', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'markAsRead'])->name('visitor.read');
+
+        // Close/resolve conversation
+        Route::post('/visitors/{visitorId}/close', [App\Http\Controllers\Api\WebsiteChatApiController::class, 'closeConversation'])->name('visitor.close');
+    });
+
+
 });
