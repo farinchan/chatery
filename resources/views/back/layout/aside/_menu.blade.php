@@ -41,7 +41,8 @@
                 </a>
             </div>
 
-            <div data-kt-menu-trigger="click" class="menu-item  @if (request()->routeIs('back.team.whatsapp.*')) here show @endif menu-accordion">
+            <div data-kt-menu-trigger="click"
+                class="menu-item  @if (request()->routeIs('back.team.whatsapp.*')) here show @endif menu-accordion">
                 <span class="menu-link">
                     <span class="menu-icon">
                         <i class="fa-brands fa-whatsapp fs-2"></i>
@@ -106,6 +107,46 @@
                 </div>
             </div>
 
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion ">
+                <span class="menu-link">
+                    <span class="menu-icon">
+                        <i class="fa-brands fa-instagram fs-2"></i>
+                    </span>
+                    <span class="menu-title">Instagram</span>
+                    <span class="menu-arrow"></span>
+                </span>
+                <div class="menu-sub menu-sub-accordion">
+                    <div class="menu-item">
+                        <a class="menu-link" href="">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Coming Soon</span>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion ">
+                <span class="menu-link">
+                    <span class="menu-icon">
+                        <i class="fa-brands fa-linkedin-in fs-2"></i>
+                    </span>
+                    <span class="menu-title">Linkedin</span>
+                    <span class="menu-arrow"></span>
+                </span>
+                <div class="menu-sub menu-sub-accordion">
+                    <div class="menu-item">
+                        <a class="menu-link" href="">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Coming Soon</span>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
             <div data-kt-menu-trigger="click"
                 class="menu-item menu-accordion @if (request()->routeIs('back.team.webchat.*')) here show @endif">
                 <span class="menu-link">
@@ -134,7 +175,6 @@
                     </div>
                 </div>
             </div>
-
         @endif
 
         <div class="menu-item pt-5">
@@ -295,8 +335,7 @@
                 <div class="menu-sub menu-sub-accordion">
 
                     <div class="menu-item">
-                        <a class="menu-link"
-                            href="#">
+                        <a class="menu-link" href="#">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
