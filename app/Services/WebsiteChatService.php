@@ -6,6 +6,7 @@ use App\Models\WebsiteChatWidget;
 use App\Models\WebsiteChatVisitor;
 use App\Models\WebsiteChatMessage;
 use App\Models\WebsiteChatLog;
+use App\Services\WebsiteChatWebhookService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Jenssegers\Agent\Agent;
@@ -93,9 +94,29 @@ class WebsiteChatService
                 $visitor->id,
                 $ipAddress
             );
+
+            // Send webhook for visitor connected
+            $this->sendVisitorConnectedWebhook($visitor);
         }
 
         return $visitor;
+    }
+
+    /**
+     * Send webhook for visitor connected
+     */
+    protected function sendVisitorConnectedWebhook(WebsiteChatVisitor $visitor): void
+    {
+        try {
+            $webhookService = WebsiteChatWebhookService::forWidget($this->widget);
+            $webhookService->sendVisitorConnectedWebhook($visitor);
+        } catch (\Exception $e) {
+            Log::error('Failed to send visitor connected webhook', [
+                'widget_id' => $this->widget->id,
+                'visitor_id' => $visitor->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -189,7 +210,27 @@ class WebsiteChatService
             );
         }
 
+        // Send webhook if enabled
+        $this->sendMessageWebhook($visitor, $chatMessage);
+
         return $chatMessage;
+    }
+
+    /**
+     * Send webhook for incoming message
+     */
+    protected function sendMessageWebhook(WebsiteChatVisitor $visitor, WebsiteChatMessage $message): void
+    {
+        try {
+            $webhookService = WebsiteChatWebhookService::forWidget($this->widget);
+            $webhookService->sendMessageReceivedWebhook($visitor, $message);
+        } catch (\Exception $e) {
+            Log::error('Failed to send message webhook', [
+                'widget_id' => $this->widget->id,
+                'visitor_id' => $visitor->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

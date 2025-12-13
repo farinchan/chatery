@@ -233,4 +233,78 @@ class WebsiteChatController extends Controller
             ],
         ]);
     }
+
+    public function updateWebhook(Request $request, $nameId)
+    {
+        $team = $this->getTeam($nameId);
+        $widget = WebsiteChatWidget::where('team_id', $team->id)->firstOrFail();
+
+        $request->validate([
+            'webhook_url' => 'nullable|url|max:500',
+            'webhook_secret' => 'nullable|string|max:255',
+            'webhook_enabled' => 'nullable|boolean',
+            'webhook_events' => 'nullable|array',
+            'webhook_events.*' => 'required|string|in:message.received,visitor.connected,visitor.disconnected',
+        ]);
+
+        try {
+            $widget->update([
+                'webhook_url' => $request->webhook_url,
+                'webhook_secret' => $request->webhook_secret,
+                'webhook_enabled' => $request->boolean('webhook_enabled', false),
+                'webhook_events' => $request->webhook_events ?? [],
+            ]);
+
+            return back()->with('success', 'Webhook berhasil diperbarui!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memperbarui webhook: ' . $e->getMessage());
+        }
+    }
+
+    public function testWebhook(Request $request, $nameId)
+    {
+        $team = $this->getTeam($nameId);
+        $widget = WebsiteChatWidget::where('team_id', $team->id)->firstOrFail();
+
+        if (empty($widget->webhook_url)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Webhook URL belum dikonfigurasi',
+            ]);
+        }
+
+        try {
+            $webhookService = \App\Services\WebsiteChatWebhookService::forWidget($widget);
+            $result = $webhookService->testWebhook();
+
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengirim test webhook: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function toggleVisitorWebhook(Request $request, $nameId, $visitorId)
+    {
+        $team = $this->getTeam($nameId);
+        $widget = WebsiteChatWidget::where('team_id', $team->id)->firstOrFail();
+
+        $visitor = WebsiteChatVisitor::where('id', $visitorId)
+            ->where('website_chat_widget_id', $widget->id)
+            ->firstOrFail();
+
+        $visitor->update([
+            'webhook_forward_enabled' => !$visitor->webhook_forward_enabled,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'webhook_forward_enabled' => $visitor->webhook_forward_enabled,
+            'message' => $visitor->webhook_forward_enabled
+                ? 'Webhook forwarding diaktifkan untuk visitor ini'
+                : 'Webhook forwarding dinonaktifkan untuk visitor ini',
+        ]);
+    }
 }

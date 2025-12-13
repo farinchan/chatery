@@ -24,6 +24,10 @@ class WebsiteChatWidget extends Model
         'allowed_domains',
         'operating_hours',
         'quick_replies',
+        'webhook_url',
+        'webhook_secret',
+        'webhook_enabled',
+        'webhook_events',
         'is_active',
         'require_email',
         'require_name',
@@ -33,9 +37,11 @@ class WebsiteChatWidget extends Model
         'is_active' => 'boolean',
         'require_email' => 'boolean',
         'require_name' => 'boolean',
+        'webhook_enabled' => 'boolean',
         'allowed_domains' => 'array',
         'operating_hours' => 'array',
         'quick_replies' => 'array',
+        'webhook_events' => 'array',
     ];
 
     protected static function boot()

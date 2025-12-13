@@ -79,6 +79,9 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
             Route::put('/quick-replies', [BackWebsiteChatController::class, 'updateQuickReplies'])->name('quick-replies');
             Route::put('/allowed-domains', [BackWebsiteChatController::class, 'updateAllowedDomains'])->name('allowed-domains');
             Route::get('/status', [BackWebsiteChatController::class, 'getStatus'])->name('status');
+            Route::put('/webhook', [BackWebsiteChatController::class, 'updateWebhook'])->name('webhook.update');
+            Route::post('/webhook/test', [BackWebsiteChatController::class, 'testWebhook'])->name('webhook.test');
+            Route::post('/visitor/{visitorId}/toggle-webhook', [BackWebsiteChatController::class, 'toggleVisitorWebhook'])->name('visitor.toggle-webhook');
         });
 
         Route::prefix('customer-service')->name('customer-service.')->group(function () {

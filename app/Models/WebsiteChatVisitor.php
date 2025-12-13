@@ -26,12 +26,14 @@ class WebsiteChatVisitor extends Model
         'referrer_url',
         'current_page',
         'is_online',
+        'webhook_forward_enabled',
         'last_seen_at',
         'last_message_at',
     ];
 
     protected $casts = [
         'is_online' => 'boolean',
+        'webhook_forward_enabled' => 'boolean',
         'last_seen_at' => 'datetime',
         'last_message_at' => 'datetime',
     ];

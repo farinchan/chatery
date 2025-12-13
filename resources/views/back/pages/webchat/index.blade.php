@@ -224,6 +224,96 @@
                                         </button>
                                     </div>
                                 </form>
+
+                                {{-- Webhook Configuration --}}
+                                <div class="separator separator-dashed my-10"></div>
+
+                                <h3 class="fs-4 fw-bold mb-5">
+                                    <i class="fas fa-link text-primary me-2"></i>
+                                    Webhook Configuration
+                                </h3>
+                                <p class="text-muted fs-7 mb-5">
+                                    Teruskan pesan masuk dari visitor ke external webhook (API endpoint).
+                                    Berguna untuk integrasi dengan sistem lain seperti CRM, Telegram Bot, dll.
+                                </p>
+
+                                <form action="{{ route('back.team.webchat.webhook.update', $team->name_id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <div class="fv-row mb-5">
+                                        <label class="fw-semibold fs-6 mb-2">Webhook URL</label>
+                                        <input type="url" name="webhook_url"
+                                            class="form-control form-control-solid"
+                                            placeholder="https://your-server.com/webhook"
+                                            value="{{ old('webhook_url', $widget->webhook_url) }}" />
+                                        <div class="text-muted fs-7 mt-2">URL yang akan menerima data webhook (POST request)</div>
+                                    </div>
+
+                                    <div class="fv-row mb-5">
+                                        <label class="fw-semibold fs-6 mb-2">Webhook Secret (Opsional)</label>
+                                        <input type="text" name="webhook_secret"
+                                            class="form-control form-control-solid"
+                                            placeholder="secret_key_for_signature"
+                                            value="{{ old('webhook_secret', $widget->webhook_secret) }}" />
+                                        <div class="text-muted fs-7 mt-2">Digunakan untuk membuat HMAC signature (header: X-Webhook-Signature)</div>
+                                    </div>
+
+                                    <div class="fv-row mb-5">
+                                        <label class="fw-semibold fs-6 mb-2">Events</label>
+                                        <div class="d-flex flex-wrap gap-5">
+                                            <div class="form-check form-check-custom form-check-solid">
+                                                <input class="form-check-input" type="checkbox" name="webhook_events[]"
+                                                    value="message.received" id="evt_message"
+                                                    {{ in_array('message.received', $widget->webhook_events ?? []) ? 'checked' : '' }} />
+                                                <label class="form-check-label" for="evt_message">
+                                                    Pesan Masuk
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-custom form-check-solid">
+                                                <input class="form-check-input" type="checkbox" name="webhook_events[]"
+                                                    value="visitor.connected" id="evt_connected"
+                                                    {{ in_array('visitor.connected', $widget->webhook_events ?? []) ? 'checked' : '' }} />
+                                                <label class="form-check-label" for="evt_connected">
+                                                    Visitor Terhubung
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-custom form-check-solid">
+                                                <input class="form-check-input" type="checkbox" name="webhook_events[]"
+                                                    value="visitor.disconnected" id="evt_disconnected"
+                                                    {{ in_array('visitor.disconnected', $widget->webhook_events ?? []) ? 'checked' : '' }} />
+                                                <label class="form-check-label" for="evt_disconnected">
+                                                    Visitor Terputus
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="text-muted fs-7 mt-2">Jika tidak ada yang dipilih, semua event akan dikirim</div>
+                                    </div>
+
+                                    <div class="fv-row mb-5">
+                                        <div class="form-check form-switch form-check-custom form-check-solid">
+                                            <input class="form-check-input" type="checkbox" name="webhook_enabled" value="1"
+                                                id="webhook_enabled"
+                                                {{ $widget->webhook_enabled ? 'checked' : '' }} />
+                                            <label class="form-check-label fw-semibold" for="webhook_enabled">
+                                                Aktifkan Webhook
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex gap-3 mt-8">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i>
+                                            Simpan Webhook
+                                        </button>
+                                        @if($widget->webhook_url)
+                                        <button type="button" class="btn btn-light-info" onclick="testWebhook()">
+                                            <i class="fas fa-vial me-2"></i>
+                                            Test Webhook
+                                        </button>
+                                        @endif
+                                    </div>
+                                </form>
                             @else
                                 {{-- Setup Form --}}
                                 <div class="text-center mb-8">
@@ -365,6 +455,49 @@
                     text: 'Kode embed berhasil disalin',
                     timer: 2000,
                     showConfirmButton: false
+                });
+            });
+        }
+
+        function testWebhook() {
+            Swal.fire({
+                title: 'Testing Webhook...',
+                text: 'Mengirim test webhook ke URL yang dikonfigurasi',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch('{{ route("back.team.webchat.webhook.test", $team->name_id) }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        html: `<p>${data.message}</p><p class="text-muted fs-7">Status Code: ${data.status_code || '-'}</p>`,
+                        timer: 3000
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: `<p>${data.message}</p>${data.response ? '<pre class="text-start bg-light p-3 mt-3 fs-7">' + data.response + '</pre>' : ''}`
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Gagal mengirim test webhook: ' + error.message
                 });
             });
         }

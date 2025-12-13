@@ -93,6 +93,7 @@ class WebsiteChatComponent extends Component
                 'location' => $visitor->location,
                 'device_info' => $visitor->device_info,
                 'unread_count' => $visitor->unread_count,
+                'webhook_forward_enabled' => $visitor->webhook_forward_enabled ?? true,
                 'last_message' => $lastMessage ? $lastMessage->getPreviewText() : '',
                 'last_message_time' => $visitor->last_message_at ? $visitor->last_message_at->format('H:i') : '',
                 'last_message_date' => $visitor->last_message_at ? $visitor->last_message_at->format('d/m/Y') : '',
@@ -117,6 +118,7 @@ class WebsiteChatComponent extends Component
                 'location' => $visitor->location,
                 'device_info' => $visitor->device_info,
                 'current_page' => $visitor->current_page,
+                'webhook_forward_enabled' => $visitor->webhook_forward_enabled ?? true,
                 'last_seen' => $visitor->last_seen_at ? $visitor->last_seen_at->diffForHumans() : '',
             ];
         }
@@ -233,6 +235,30 @@ class WebsiteChatComponent extends Component
 
                 $this->loadVisitors();
                 session()->flash('success', 'Visitor berhasil dihapus');
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    public function toggleWebhookForward($visitorId)
+    {
+        try {
+            $visitor = WebsiteChatVisitor::find($visitorId);
+            if ($visitor && $visitor->website_chat_widget_id == $this->widgetId) {
+                $visitor->update([
+                    'webhook_forward_enabled' => !$visitor->webhook_forward_enabled,
+                ]);
+
+                // Update selected visitor data if it's the current one
+                if ($this->selectedVisitorId == $visitorId) {
+                    $this->selectedVisitorData['webhook_forward_enabled'] = $visitor->webhook_forward_enabled;
+                }
+
+                $this->loadVisitors();
+
+                $status = $visitor->webhook_forward_enabled ? 'diaktifkan' : 'dinonaktifkan';
+                session()->flash('success', "Webhook forwarding {$status} untuk visitor ini");
             }
         } catch (\Exception $e) {
             session()->flash('error', 'Error: ' . $e->getMessage());

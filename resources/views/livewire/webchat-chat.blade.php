@@ -628,7 +628,12 @@
                             </div>
                             <div class="wc-visitor-info">
                                 <div class="wc-visitor-top">
-                                    <span class="wc-visitor-name">{{ $visitor['name'] }}</span>
+                                    <span class="wc-visitor-name">
+                                        {{ $visitor['name'] }}
+                                        @if ($visitor['webhook_forward_enabled'] ?? true)
+                                            <i class="fas fa-link text-success ms-1" style="font-size: 10px;" title="Webhook aktif"></i>
+                                        @endif
+                                    </span>
                                     <span class="wc-visitor-time">{{ $visitor['last_message_time'] }}</span>
                                 </div>
                                 <div class="wc-visitor-middle">
@@ -776,6 +781,29 @@
                                     <span class="badge bg-secondary">Offline</span>
                                     <small class="d-block text-muted mt-1">{{ $selectedVisitorData['last_seen'] }}</small>
                                 @endif
+                            </div>
+                        </div>
+
+                        <h4 class="mt-4">Webhook</h4>
+                        <div class="wc-info-item">
+                            <div class="wc-info-label">Teruskan ke Webhook</div>
+                            <div class="wc-info-value">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                        id="webhookToggle"
+                                        wire:click="toggleWebhookForward({{ $selectedVisitorData['id'] }})"
+                                        {{ ($selectedVisitorData['webhook_forward_enabled'] ?? true) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="webhookToggle">
+                                        @if ($selectedVisitorData['webhook_forward_enabled'] ?? true)
+                                            <span class="text-success">Aktif</span>
+                                        @else
+                                            <span class="text-muted">Nonaktif</span>
+                                        @endif
+                                    </label>
+                                </div>
+                                <small class="text-muted d-block mt-1">
+                                    Jika aktif, pesan dari visitor ini akan diteruskan ke webhook external
+                                </small>
                             </div>
                         </div>
                     </div>
