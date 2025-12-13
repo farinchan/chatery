@@ -48,7 +48,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-5 offset-lg-1 right-info width-big">
-                                <img src="{{ asset('front/img/2440x1578.png') }}" alt="Thumb">
+                                <img src="{{ asset('front/img/1.png') }}" alt="Thumb">
                             </div>
                         </div>
                     </div>
@@ -246,15 +246,17 @@
                         <div class="pricing-item">
                             <ul>
                                 <li class="pricing-header">
-                                    <h4>Starter</h4>
+                                    <h4>Free Tier</h4>
                                     <h2><sup>Rp</sup>0 <sub>/ Bulan</sub></h2>
                                 </li>
                                 <li><i class="fas fa-check"></i> 1 User</li>
-                                <li><i class="fas fa-check"></i> 1 Channel</li>
+                                <li><i class="fas fa-check"></i> WhatsApp</li>
+                                <li><i class="fas fa-check"></i> Telegram</li>
+                                <li><i class="fas fa-times"></i> Web Chat</li>
                                 <li><i class="fas fa-check"></i> 100 Pesan/bulan</li>
                                 <li><i class="fas fa-check"></i> Basic Analytics</li>
                                 <li><i class="fas fa-times"></i> AI Support</li>
-                                <li><i class="fas fa-times"></i> Priority Support</li>
+                                <li><i class="fas fa-times"></i> N8N Integration</li>
                                 <li><i class="fas fa-check"></i> Dokumentasi</li>
                                 <li class="footer">
                                     <a class="btn circle btn-theme border btn-sm" href="#">Buy This Plan</a>
@@ -266,15 +268,17 @@
                         <div class="pricing-item active">
                             <ul>
                                 <li class="pricing-header">
-                                    <h4>Professional</h4>
-                                    <h2><sup>Rp</sup>299K <sub>/ Bulan</sub></h2>
+                                    <h4>Platinum</h4>
+                                    <h2><sup>Rp</sup>80K <sub>/ Bulan</sub></h2>
                                 </li>
                                 <li><i class="fas fa-check"></i> 5 Users</li>
-                                <li><i class="fas fa-check"></i> Semua Channel</li>
+                                   <li><i class="fas fa-check"></i> WhatsApp</li>
+                                <li><i class="fas fa-check"></i> Telegram</li>
+                                <li><i class="fas fa-check"></i> Web Chat</li>
                                 <li><i class="fas fa-check"></i> Unlimited Pesan</li>
                                 <li><i class="fas fa-check"></i> Advanced Analytics</li>
                                 <li><i class="fas fa-check"></i> AI Support</li>
-                                <li><i class="fas fa-check"></i> Priority Support</li>
+                                <li><i class="fas fa-times"></i> N8N Integration</li>
                                 <li><i class="fas fa-check"></i> Dokumentasi</li>
                                 <li class="footer">
                                     <a class="btn circle btn-theme effect btn-sm" href="#">Buy This Plan</a>
@@ -286,16 +290,18 @@
                         <div class="pricing-item">
                             <ul>
                                 <li class="pricing-header">
-                                    <h4>Enterprise</h4>
-                                    <h2>Custom</h2>
+                                    <h4>Diamond</h4>
+                                     <h2><sup>Rp</sup>120K <sub>/ Bulan</sub></h2>
                                 </li>
                                 <li><i class="fas fa-check"></i> Unlimited Users</li>
                                 <li><i class="fas fa-check"></i> Semua Channel</li>
                                 <li><i class="fas fa-check"></i> Unlimited Pesan</li>
-                                <li><i class="fas fa-check"></i> Custom Integration</li>
-                                <li><i class="fas fa-check"></i> Dedicated AI</li>
-                                <li><i class="fas fa-check"></i> 24/7 Support</li>
-                                <li><i class="fas fa-check"></i> SLA Guarantee</li>
+                                <li><i class="fas fa-check"></i> Unlimited Pesan</li>
+                                <li><i class="fas fa-check"></i> Advanced Analytics</li>
+                                <li><i class="fas fa-check"></i> AI Support</li>
+                                <li><i class="fas fa-check"></i> N8N Integration</li>
+                                <li><i class="fas fa-check"></i> Dokumentasi</li>
+                                <li><i class="fas fa-check"></i> Support 24/7</li>
                                 <li class="footer">
                                     <a class="btn circle btn-theme border btn-sm" href="#">Buy This Plan</a>
                                 </li>
