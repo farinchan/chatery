@@ -335,11 +335,19 @@
                 <div class="menu-sub menu-sub-accordion">
 
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link @if (request()->routeIs('back.admin.user.*')) active @endif" href="{{ route('back.admin.user.index') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
                             <span class="menu-title">Pengguna</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a class="menu-link @if (request()->routeIs('back.admin.team.*')) active @endif" href="{{ route('back.admin.team.index') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Team</span>
                         </a>
                     </div>
                 </div>

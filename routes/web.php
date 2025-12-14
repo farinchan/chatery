@@ -14,9 +14,8 @@ use App\Http\Controllers\Back\WebsiteChatController as BackWebsiteChatController
 use App\Http\Controllers\Back\DocumentationController as BackDocumentationController;
 use App\Http\Controllers\Back\MessageController as BackMessageController;
 use App\Http\Controllers\Back\SettingController as BackSettingController;
-
-
-
+use App\Http\Controllers\Back\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Back\Admin\TeamController as AdminTeamController;
 
 route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/visit', [HomeController::class, 'vistWebsite'])->name('visit.ajax');
@@ -84,9 +83,7 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
             Route::post('/visitor/{visitorId}/toggle-webhook', [BackWebsiteChatController::class, 'toggleVisitorWebhook'])->name('visitor.toggle-webhook');
         });
 
-        Route::prefix('customer-service')->name('customer-service.')->group(function () {
-
-        });
+        Route::prefix('customer-service')->name('customer-service.')->group(function () {});
     });
 
     route::prefix('dashboard')->name('dashboard.')->group(function () {
@@ -98,7 +95,7 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
         Route::post('/add-team', [BackDashboardController::class, 'addTeam'])->name('add-team');
     });
 
-     Route::prefix('message')->name('message.')->group(function () {
+    Route::prefix('message')->name('message.')->group(function () {
         Route::get('/', [BackMessageController::class, 'index'])->name('index');
         Route::delete('/{id}', [BackMessageController::class, 'destroy'])->name('destroy');
     });
@@ -107,7 +104,15 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
         Route::get('/website', [BackSettingController::class, 'website'])->name('website');
         Route::put('/website', [BackSettingController::class, 'websiteUpdate'])->name('website.update');
         Route::put('/website/info', [BackSettingController::class, 'informationUpdate'])->name('website.info');
-
     });
 
+    Route::prefix('admin')->name('admin.')->group(function () {
+
+        Route::resource('user', AdminUserController::class);
+
+        Route::resource('team', AdminTeamController::class);
+        Route::post('team/{team}/member', [AdminTeamController::class, 'addMember'])->name('team.member.add');
+        Route::put('team/{team}/member/{member}', [AdminTeamController::class, 'updateMember'])->name('team.member.update');
+        Route::delete('team/{team}/member/{member}', [AdminTeamController::class, 'removeMember'])->name('team.member.remove');
+    });
 });
