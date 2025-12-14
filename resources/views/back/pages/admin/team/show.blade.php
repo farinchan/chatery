@@ -99,6 +99,22 @@
                                         <!--end::Label-->
                                     </div>
                                     <!--end::Stat-->
+                                    <!--begin::Package Stat-->
+                                    <div
+                                        class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="ki-outline ki-box fs-3 text-primary me-2"></i>
+                                            @if($team->package)
+                                                <span class="badge" style="background-color: {{ $team->package->badge_color }}; color: white;">
+                                                    {{ $team->package->name }}
+                                                </span>
+                                            @else
+                                                <span class="badge badge-light-secondary">No Package</span>
+                                            @endif
+                                        </div>
+                                        <div class="fw-semibold fs-6 text-gray-500">Package</div>
+                                    </div>
+                                    <!--end::Package Stat-->
                                 </div>
                                 <!--end::Stats-->
                             </div>
@@ -112,6 +128,82 @@
             </div>
         </div>
         <!--end::Navbar-->
+
+        <!--begin::Package Card-->
+        <div class="card mb-5 mb-xl-10">
+            <div class="card-header cursor-pointer">
+                <div class="card-title m-0">
+                    <h3 class="fw-bold m-0">Package Subscription</h3>
+                </div>
+                <div class="card-toolbar">
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#assignPackageModal">
+                        <i class="ki-outline ki-plus fs-3"></i>{{ $team->package ? 'Change Package' : 'Assign Package' }}
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-9">
+                @if($team->package)
+                    <div class="d-flex flex-wrap">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="symbol symbol-50px me-4">
+                                    <span class="symbol-label" style="background-color: {{ $team->package->badge_color }}20;">
+                                        <i class="ki-outline ki-{{ $team->package->icon ?? 'box' }} fs-2x" style="color: {{ $team->package->badge_color }}"></i>
+                                    </span>
+                                </span>
+                                <div>
+                                    <span class="fs-4 fw-bold text-gray-900">{{ $team->package->name }}</span>
+                                    <span class="badge badge-light-{{ $team->hasActivePackage() ? 'success' : 'danger' }} ms-2">
+                                        {{ $team->hasActivePackage() ? 'Active' : 'Expired' }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2"><span class="text-gray-500">Harga:</span> <span class="fw-bold">{{ $team->package->formatted_price }}</span> {{ $team->package->billing_cycle_label }}</p>
+                                    @if($team->package_expires_at)
+                                        <p class="mb-2">
+                                            <span class="text-gray-500">Expired:</span>
+                                            <span class="fw-bold {{ $team->isPackageExpired() ? 'text-danger' : '' }}">
+                                                {{ $team->package_expires_at->format('d M Y H:i') }}
+                                            </span>
+                                            @if(!$team->isPackageExpired())
+                                                <small class="text-muted">({{ $team->getDaysUntilExpiry() }} hari lagi)</small>
+                                            @endif
+                                        </p>
+                                    @else
+                                        <p class="mb-2"><span class="text-gray-500">Expired:</span> <span class="badge badge-light-success">Lifetime</span></p>
+                                    @endif
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2"><span class="text-gray-500">Max Members:</span> <span class="fw-bold">{{ $team->package->getLimitDisplay('max_members') }}</span></p>
+                                    <p class="mb-2"><span class="text-gray-500">Max Messages/Day:</span> <span class="fw-bold">{{ $team->package->getLimitDisplay('max_messages_per_day') }}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <form action="{{ route('back.admin.package.remove-from-team', $team->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus package dari team ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-light-danger">
+                                    <i class="ki-outline ki-trash fs-3"></i>Remove Package
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <div class="text-center py-10">
+                        <i class="ki-outline ki-box fs-3x text-gray-400 mb-5"></i>
+                        <p class="text-gray-600 fs-5">Team belum memiliki package</p>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignPackageModal">
+                            <i class="ki-outline ki-plus fs-3"></i>Assign Package
+                        </button>
+                    </div>
+                @endif
+            </div>
+        </div>
+        <!--end::Package Card-->
 
         <!--begin::Members Card-->
         <div class="card mb-5 mb-xl-10">
@@ -422,4 +514,57 @@
         </div>
     </div>
     <!--end::Delete Team Modal-->
+
+    <!--begin::Assign Package Modal-->
+    <div class="modal fade" id="assignPackageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered mw-650px">
+            <div class="modal-content">
+                <form action="{{ route('back.admin.package.assign-to-team', $team->package_id ?? 0) }}" method="POST" id="assignPackageForm">
+                    @csrf
+                    <input type="hidden" name="team_id" value="{{ $team->id }}">
+                    <div class="modal-header">
+                        <h2 class="fw-bold">{{ $team->package ? 'Ubah Package' : 'Assign Package' }}</h2>
+                        <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+                            <i class="ki-outline ki-cross fs-1"></i>
+                        </div>
+                    </div>
+                    <div class="modal-body py-10 px-lg-17">
+                        <div class="fv-row mb-7">
+                            <label class="form-label required">Package</label>
+                            <select name="package_id" id="packageSelect" class="form-select form-select-solid" data-control="select2"
+                                data-placeholder="Pilih Package" data-dropdown-parent="#assignPackageModal" required>
+                                <option value="">Pilih Package</option>
+                                @foreach ($packages ?? [] as $package)
+                                    <option value="{{ $package->id }}" {{ $team->package_id == $package->id ? 'selected' : '' }}>
+                                        {{ $package->name }} - {{ $package->formatted_price }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="fv-row">
+                            <label class="form-label">Tanggal Expired</label>
+                            <input type="datetime-local" name="expires_at" class="form-control form-control-solid"
+                                value="{{ $team->package_expires_at?->format('Y-m-d\TH:i') }}" placeholder="Kosongkan untuk lifetime">
+                            <div class="form-text">Kosongkan untuk subscription lifetime</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--end::Assign Package Modal-->
+
+    @push('scripts')
+    <script>
+        document.getElementById('packageSelect').addEventListener('change', function() {
+            var packageId = this.value;
+            var form = document.getElementById('assignPackageForm');
+            form.action = "{{ url('back/admin/package') }}/" + packageId + "/assign-to-team";
+        });
+    </script>
+    @endpush
 @endsection

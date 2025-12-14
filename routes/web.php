@@ -16,6 +16,7 @@ use App\Http\Controllers\Back\MessageController as BackMessageController;
 use App\Http\Controllers\Back\SettingController as BackSettingController;
 use App\Http\Controllers\Back\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Back\Admin\TeamController as AdminTeamController;
+use App\Http\Controllers\Back\Admin\PackageController as AdminPackageController;
 
 route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/visit', [HomeController::class, 'vistWebsite'])->name('visit.ajax');
@@ -114,5 +115,10 @@ route::prefix('back')->name('back.')->middleware('auth')->group(function () {
         Route::post('team/{team}/member', [AdminTeamController::class, 'addMember'])->name('team.member.add');
         Route::put('team/{team}/member/{member}', [AdminTeamController::class, 'updateMember'])->name('team.member.update');
         Route::delete('team/{team}/member/{member}', [AdminTeamController::class, 'removeMember'])->name('team.member.remove');
+
+        Route::resource('package', AdminPackageController::class);
+        Route::post('package/{package}/toggle-status', [AdminPackageController::class, 'toggleStatus'])->name('package.toggle-status');
+        Route::post('package/{package}/assign-to-team', [AdminPackageController::class, 'assignToTeam'])->name('package.assign-to-team');
+        Route::delete('package/remove-from-team/{team}', [AdminPackageController::class, 'removeFromTeam'])->name('package.remove-from-team');
     });
 });

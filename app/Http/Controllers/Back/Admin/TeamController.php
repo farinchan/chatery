@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Back\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Package;
 use App\Models\Team;
 use App\Models\TeamUser;
 use App\Models\User;
@@ -104,7 +105,7 @@ class TeamController extends Controller
      */
     public function show(string $id)
     {
-        $team = Team::with(['teamUsers.user'])->findOrFail($id);
+        $team = Team::with(['teamUsers.user', 'package'])->findOrFail($id);
 
         $data = [
             'title' => 'Detail Team',
@@ -112,6 +113,7 @@ class TeamController extends Controller
             'submenu' => 'Team',
             'team' => $team,
             'availableUsers' => User::whereNotIn('id', $team->teamUsers->pluck('user_id'))->get(),
+            'packages' => Package::active()->ordered()->get(),
         ];
 
         return view('back.pages.admin.team.show', $data);

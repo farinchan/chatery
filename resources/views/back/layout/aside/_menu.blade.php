@@ -350,6 +350,14 @@
                             <span class="menu-title">Team</span>
                         </a>
                     </div>
+                    <div class="menu-item">
+                        <a class="menu-link @if (request()->routeIs('back.admin.package.*')) active @endif" href="{{ route('back.admin.package.index') }}">
+                            <span class="menu-bullet">
+                                <span class="bullet bullet-dot"></span>
+                            </span>
+                            <span class="menu-title">Package</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
